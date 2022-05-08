@@ -1,0 +1,7 @@
+2022-02-23 23:09:26	cleaning: processed 4096 bytes in ST=0.000000 RT = 1500 miliseconds
+2022-02-23 23:09:26	cleaning: processed 4096 bytes in ST=0.000000 RT = 1648 miliseconds
+2022-02-23 23:09:26	cleaning: processed 4096 bytes in ST=0.000000 RT = 1726 miliseconds
+2022-02-23 23:09:26	cleaning: processed 4096 bytes in ST=0.000000 RT = 1732 miliseconds
+2022-02-23 23:09:26	cleaning: processed 4096 bytes in ST=0.000000 RT = 1741 miliseconds
+2022-02-23 23:09:26	cleaningpattern: pattern executed in ST = 2490 miliseconds
+2022-02-23 23:09:26	cleaningstage: stage executed in ST = 2491 miliseconds

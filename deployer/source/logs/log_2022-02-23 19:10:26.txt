@@ -1,0 +1,24 @@
+2022-02-23 19:10:26	PARSER: Configured single cleaning
+2022-02-23 19:10:26	PARSER: Configured pattern cleaningpattern
+2022-02-23 19:10:26	PARSER: Configured stage cleaningstage
+2022-02-23 19:10:26	PARSER: Configured workflow dicomimages2
+2022-02-23 19:10:26	LAUCHER: Coupling stages and building blocks
+2022-02-23 19:10:26	dicomimages2: Workdir dicomimages2
+2022-02-23 19:10:26	dicomimages2: Workdir exists
+2022-02-23 19:10:26	dicomimages2: Stage cleaningstage added
+2022-02-23 19:10:26	cleaningstage: Workdir cleaningstage
+2022-02-23 19:10:26	cleaningstage: Workdir exists
+2022-02-23 19:10:26	cleaningstage: Added building block cleaningpattern
+2022-02-23 19:10:26	cleaningpattern: Workdir cleaningpattern
+2022-02-23 19:10:26	cleaningpattern: Workdir exists
+2022-02-23 19:10:26	cleaning: Workdir cleaning
+2022-02-23 19:10:26	cleaning: Workdir exists
+2022-02-23 19:10:26	LAUNCHER: Creating YML file at dicomimages2/docker-compose.yml
+2022-02-23 19:10:26	LAUCHER: deploying virtual containers of workflow dicomimages2
+2022-02-23 19:10:26	dicomimages2: executing 
+2022-02-23 19:10:26	cleaningstage: waiting
+2022-02-23 19:10:26	cleaningstage: WORKING
+2022-02-23 19:10:26	cleaningstage: has 1 sources
+2022-02-23 19:10:26	cleaningpattern: waiting
+2022-02-23 19:10:26	cleaningpattern: running
+2022-02-23 19:10:26	cleaningpattern: executing load balancer

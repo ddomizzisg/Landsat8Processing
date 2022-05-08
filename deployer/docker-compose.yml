@@ -1,0 +1,22 @@
+version: '3'
+services:
+  deployer:
+    build: .
+    tty: true
+    restart: unless-stopped
+    working_dir: /home/domizzi/Documents/geoprocindexing/deployer/
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock' #Docker deamon
+      - '/home/domizzi/Documents/geoprocindexing/deployer/:/home/domizzi/Documents/geoprocindexing/deployer/' #Deployer
+      - '/home/domizzi/Documents/Landsat8/:/home/domizzi/Documents/Landsat8/' #Data source
+      - './cfg-files:/cfg-files' #Configuration files
+  explorer:
+    image: ddomizzi/apache:php
+    tty: true
+    ports:
+      - 8080:80
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - './explorer:/var/www/html'
+      - './source/results/:/var/www/html/data'

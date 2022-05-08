@@ -1,0 +1,11 @@
+2022-05-08 15:13:49	uncompressing: processed 946535783 bytes in ST=0.000000 RT = 24478 miliseconds
+2022-05-08 15:13:49	uncompressing: processed 844911140 bytes in ST=0.000000 RT = 24541 miliseconds
+2022-05-08 15:13:49	uncompressingpattern: pattern executed in ST = 25650 miliseconds
+2022-05-08 15:13:49	uncompressingstage: stage executed in ST = 25650 miliseconds
+2022-05-08 15:13:49	correctionsstage: WORKING
+2022-05-08 15:13:49	correctionsstageWARNING: uncompressingstage  doesn't exist
+
+2022-05-08 15:13:49	correctionsstage:  has 1 sources
+2022-05-08 15:13:49	correctionspattern: waiting
+2022-05-08 15:13:49	correctionspattern: running
+2022-05-08 15:13:49	correctionspattern: executing load balancer

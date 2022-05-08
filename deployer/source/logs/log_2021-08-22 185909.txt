@@ -1,0 +1,6 @@
+2021-08-22 18:59:09	PARSER: Configured workflow dicomimages
+2021-08-22 18:59:09	LAUCHER: Coupling stages and building blocks
+2021-08-22 18:59:09	dicomimages: Workdir dicomimages
+2021-08-22 18:59:09	dicomimages: Workdir created
+2021-08-22 18:59:09	LAUNCHER: Creating YML file at dicomimages/docker-compose.yml
+2021-08-22 18:59:09	LAUCHER: deploying virtual containers of workflow dicomimages

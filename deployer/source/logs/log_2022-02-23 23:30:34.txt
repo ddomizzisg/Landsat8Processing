@@ -1,0 +1,51 @@
+2022-02-23 23:30:34	PARSER: Configured single cleaning
+2022-02-23 23:30:34	PARSER: Configured single topng
+2022-02-23 23:30:34	PARSER: Configured pattern cleaningpattern
+2022-02-23 23:30:34	PARSER: Configured pattern topngpattern
+2022-02-23 23:30:34	PARSER: Configured stage cleaningstage
+2022-02-23 23:30:34	PARSER: Configured stage topngstage
+2022-02-23 23:30:34	PARSER: Configured workflow dicomimages2
+2022-02-23 23:30:34	LAUCHER: Coupling stages and building blocks
+2022-02-23 23:30:34	dicomimages2: Workdir dicomimages2
+2022-02-23 23:30:34	dicomimages2: Workdir exists
+2022-02-23 23:30:34	dicomimages2: Stage cleaningstage added
+2022-02-23 23:30:34	cleaningstage: Workdir cleaningstage
+2022-02-23 23:30:34	cleaningstage: Workdir exists
+2022-02-23 23:30:34	cleaningstage: Added building block cleaningpattern
+2022-02-23 23:30:34	cleaningpattern: Workdir cleaningpattern
+2022-02-23 23:30:34	cleaningpattern: Workdir exists
+2022-02-23 23:30:34	cleaning: Workdir cleaning
+2022-02-23 23:30:34	cleaning: Workdir exists
+2022-02-23 23:30:34	dicomimages2: Stage topngstage added
+2022-02-23 23:30:34	topngstage: Workdir topngstage
+2022-02-23 23:30:34	topngstage: Workdir exists
+2022-02-23 23:30:34	topngstage: Added source cleaningstage
+2022-02-23 23:30:34	topngstage: Added building block topngpattern
+2022-02-23 23:30:34	topngpattern: Workdir topngpattern
+2022-02-23 23:30:34	topngpattern: Workdir exists
+2022-02-23 23:30:34	topng: Workdir topng
+2022-02-23 23:30:34	topng: Workdir exists
+2022-02-23 23:30:34	LAUNCHER: Creating YML file at dicomimages2/docker-compose.yml
+2022-02-23 23:30:34	LAUCHER: deploying virtual containers of workflow dicomimages2
+2022-02-23 23:30:34	dicomimages2: executing 
+2022-02-23 23:30:34	topngstage: waiting
+2022-02-23 23:30:34	cleaningstage: waiting
+2022-02-23 23:30:34	cleaningstage: WORKING
+2022-02-23 23:30:34	cleaningstage: has 1 sources
+2022-02-23 23:30:34	cleaningpattern: waiting
+2022-02-23 23:30:34	cleaningpattern: running
+2022-02-23 23:30:34	cleaningpattern: executing load balancer
+2022-02-23 23:30:34	cleaningpattern: load balancer executed in RT = 695 miliseconds
+2022-02-23 23:30:34	cleaning: waiting
+2022-02-23 23:30:34	cleaning: waiting
+2022-02-23 23:30:34	cleaning: waiting
+2022-02-23 23:30:34	cleaning: running
+2022-02-23 23:30:34	cleaning: running
+2022-02-23 23:30:34	cleaning: running
+2022-02-23 23:30:34	cleaning: waiting
+2022-02-23 23:30:34	cleaning: waiting
+2022-02-23 23:30:34	cleaning: running
+2022-02-23 23:30:34	cleaning: running
+2022-02-23 23:30:34	cleaning: processed 0 bytes in ST=0.000000 RT = 0 miliseconds
+2022-02-23 23:30:34	cleaning: waiting
+2022-02-23 23:30:34	cleaning: running

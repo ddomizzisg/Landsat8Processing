@@ -1,0 +1,26 @@
+2022-03-08 22:59:18	cleaningpattern: load balancer executed in RT = 5252 miliseconds
+2022-03-08 22:59:18	cleaning: waiting
+2022-03-08 22:59:18	cleaning: waiting
+2022-03-08 22:59:18	cleaning: running
+2022-03-08 22:59:18	cleaning: running
+2022-03-08 22:59:18	cleaning: waiting
+2022-03-08 22:59:18	cleaning: processed 0 bytes in ST=0.000000 RT = 0 miliseconds
+2022-03-08 22:59:18	cleaning: waiting
+2022-03-08 22:59:18	cleaning: waiting
+2022-03-08 22:59:18	cleaning: waiting
+2022-03-08 22:59:18	cleaning: processed 0 bytes in ST=0.000000 RT = 0 miliseconds
+2022-03-08 22:59:18	cleaning: running
+2022-03-08 22:59:18	cleaning: running
+2022-03-08 22:59:18	cleaning: running
+2022-03-08 22:59:18	cleaning: processed 0 bytes in ST=0.000000 RT = 0 miliseconds
+2022-03-08 22:59:18	cleaning: running
+2022-03-08 22:59:18	cleaning: processed 0 bytes in ST=0.000000 RT = 0 miliseconds
+2022-03-08 22:59:18	cleaning: processed 0 bytes in ST=0.000000 RT = 0 miliseconds
+2022-03-08 22:59:18	cleaning: processed 0 bytes in ST=0.000000 RT = 0 miliseconds
+2022-03-08 22:59:18	cleaningpattern: pattern executed in ST = 5253 miliseconds
+2022-03-08 22:59:18	cleaningstage: stage executed in ST = 5253 miliseconds
+2022-03-08 22:59:18	topngstage: WORKING
+2022-03-08 22:59:18	topngstage: has 1 sources
+2022-03-08 22:59:18	topngpattern: waiting
+2022-03-08 22:59:18	topngpattern: running
+2022-03-08 22:59:18	topngpattern: executing load balancer

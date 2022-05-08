@@ -1,0 +1,54 @@
+2022-04-04 21:41:27	PARSER: Configured single cleaning
+2022-04-04 21:41:27	PARSER: Configured single topng
+2022-04-04 21:41:27	PARSER: Configured single detector
+2022-04-04 21:41:27	PARSER: Configured pattern cleaningpattern
+2022-04-04 21:41:27	PARSER: Configured pattern topngpattern
+2022-04-04 21:41:27	PARSER: Configured pattern detectorpattern
+2022-04-04 21:41:27	PARSER: Configured stage cleaningstage
+2022-04-04 21:41:27	PARSER: Configured stage topngstage
+2022-04-04 21:41:27	PARSER: Configured stage detectorstage
+2022-04-04 21:41:27	PARSER: Configured workflow dicomimages2
+2022-04-04 21:41:27	LAUCHER: Coupling stages and building blocks
+2022-04-04 21:41:27	dicomimages2: Workdir dicomimages2
+2022-04-04 21:41:27	dicomimages2: Workdir exists
+2022-04-04 21:41:27	dicomimages2: Stage cleaningstage added
+2022-04-04 21:41:27	cleaningstage: Workdir cleaningstage
+2022-04-04 21:41:27	cleaningstage: Workdir exists
+2022-04-04 21:41:27	cleaningstage: Added building block cleaningpattern
+2022-04-04 21:41:27	cleaningpattern: Workdir cleaningpattern
+2022-04-04 21:41:27	cleaningpattern: Workdir exists
+2022-04-04 21:41:27	cleaning: Workdir cleaning
+2022-04-04 21:41:27	cleaning: Workdir exists
+2022-04-04 21:41:27	dicomimages2: Stage topngstage added
+2022-04-04 21:41:27	topngstage: Workdir topngstage
+2022-04-04 21:41:27	topngstage: Workdir exists
+2022-04-04 21:41:27	topngstage: Added source cleaningstage
+2022-04-04 21:41:27	topngstage: Added building block topngpattern
+2022-04-04 21:41:27	topngpattern: Workdir topngpattern
+2022-04-04 21:41:27	topngpattern: Workdir exists
+2022-04-04 21:41:27	topng: Workdir topng
+2022-04-04 21:41:27	topng: Workdir exists
+2022-04-04 21:41:27	dicomimages2: Stage detectorstage added
+2022-04-04 21:41:27	detectorstage: Workdir detectorstage
+2022-04-04 21:41:27	detectorstage: Workdir exists
+2022-04-04 21:41:27	detectorstage: Added source topngstage
+2022-04-04 21:41:27	detectorstage: Added building block detectorpattern
+2022-04-04 21:41:27	detectorpattern: Workdir detectorpattern
+2022-04-04 21:41:27	detectorpattern: Workdir exists
+2022-04-04 21:41:27	detector: Workdir detector
+2022-04-04 21:41:27	detector: Workdir exists
+2022-04-04 21:41:27	LAUNCHER: Creating YML file at dicomimages2/docker-compose.yml
+2022-04-04 21:41:27	LAUNCHER: WARNING: topngstage  doesn't exist or it isn't a directory
+2022-04-04 21:41:27	LAUNCHER: WARNING: cleaningstage  doesn't exist or it isn't a directory
+2022-04-04 21:41:27	LAUNCHER: WARNING: topngstage  doesn't exist or it isn't a directory
+2022-04-04 21:41:27	LAUNCHER: WARNING: cleaningstage  doesn't exist or it isn't a directory
+2022-04-04 21:41:27	LAUCHER: deploying virtual containers of workflow dicomimages2
+2022-04-04 21:41:27	dicomimages2: executing 
+2022-04-04 21:41:27	cleaningstage: waiting
+2022-04-04 21:41:27	topngstage: waiting
+2022-04-04 21:41:27	cleaningstage: WORKING
+2022-04-04 21:41:27	detectorstage: waiting
+2022-04-04 21:41:27	cleaningstage:  has 1 sources
+2022-04-04 21:41:27	cleaningpattern: waiting
+2022-04-04 21:41:27	cleaningpattern: running
+2022-04-04 21:41:27	cleaningpattern: executing load balancer

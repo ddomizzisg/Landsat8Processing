@@ -1,0 +1,45 @@
+2022-04-04 22:20:03	PARSER: Configured single cleaning
+2022-04-04 22:20:03	PARSER: Configured single topng
+2022-04-04 22:20:03	PARSER: Configured single detector
+2022-04-04 22:20:03	PARSER: Configured pattern cleaningpattern
+2022-04-04 22:20:03	PARSER: Configured pattern topngpattern
+2022-04-04 22:20:03	PARSER: Configured pattern detectorpattern
+2022-04-04 22:20:03	PARSER: Configured stage cleaningstage
+2022-04-04 22:20:03	PARSER: Configured stage topngstage
+2022-04-04 22:20:03	PARSER: Configured stage detectorstage
+2022-04-04 22:20:03	PARSER: Configured workflow hueso
+2022-04-04 22:20:03	LAUCHER: Coupling stages and building blocks
+2022-04-04 22:20:03	hueso: Workdir hueso
+2022-04-04 22:20:03	hueso: Workdir created
+2022-04-04 22:20:03	hueso: Stage cleaningstage added
+2022-04-04 22:20:03	cleaningstage: Workdir cleaningstage
+2022-04-04 22:20:03	cleaningstage: Workdir created
+2022-04-04 22:20:03	cleaningstage: Added building block cleaningpattern
+2022-04-04 22:20:03	cleaningpattern: Workdir cleaningpattern
+2022-04-04 22:20:03	cleaningpattern: Workdir created
+2022-04-04 22:20:03	cleaning: Workdir cleaning
+2022-04-04 22:20:03	cleaning: Workdir created
+2022-04-04 22:20:03	hueso: Stage topngstage added
+2022-04-04 22:20:03	topngstage: Workdir topngstage
+2022-04-04 22:20:03	topngstage: Workdir created
+2022-04-04 22:20:03	topngstage: Added source cleaningstage
+2022-04-04 22:20:03	topngstage: Added building block topngpattern
+2022-04-04 22:20:03	topngpattern: Workdir topngpattern
+2022-04-04 22:20:03	topngpattern: Workdir created
+2022-04-04 22:20:03	topng: Workdir topng
+2022-04-04 22:20:03	topng: Workdir created
+2022-04-04 22:20:03	hueso: Stage detectorstage added
+2022-04-04 22:20:03	detectorstage: Workdir detectorstage
+2022-04-04 22:20:03	detectorstage: Workdir created
+2022-04-04 22:20:03	detectorstage: Added source topngstage
+2022-04-04 22:20:03	detectorstage: Added building block detectorpattern
+2022-04-04 22:20:03	detectorpattern: Workdir detectorpattern
+2022-04-04 22:20:03	detectorpattern: Workdir created
+2022-04-04 22:20:03	detector: Workdir detector
+2022-04-04 22:20:03	detector: Workdir created
+2022-04-04 22:20:03	LAUNCHER: Creating YML file at hueso/docker-compose.yml
+2022-04-04 22:20:03	LAUNCHER: WARNING: topngstage  doesn't exist or it isn't a directory
+2022-04-04 22:20:03	LAUNCHER: WARNING: cleaningstage  doesn't exist or it isn't a directory
+2022-04-04 22:20:03	LAUNCHER: WARNING: topngstage  doesn't exist or it isn't a directory
+2022-04-04 22:20:03	LAUNCHER: WARNING: cleaningstage  doesn't exist or it isn't a directory
+2022-04-04 22:20:03	LAUCHER: deploying virtual containers of workflow hueso

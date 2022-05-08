@@ -1,0 +1,10 @@
+version: '3'
+services:
+    mongoDB:
+        container_name: mongoDB
+        image: mongo
+        restart: always
+        ports:
+            - "27018:27017"
+        expose:
+            - "27017/tcp"

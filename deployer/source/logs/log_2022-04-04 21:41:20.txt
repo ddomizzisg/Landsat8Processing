@@ -1,0 +1,5 @@
+2022-04-04 21:41:20	LAUCHER: to shutdown the containers execute  
+
+docker-compose --log-level ERROR -p /home/domizzi/Documents/PRONACES/INR/flujo1-master/deployer/source/results/dicomimages2 -f /home/domizzi/Documents/PRONACES/INR/flujo1-master/deployer/source/results/dicomimages2/docker-compose.yml  down
+
+

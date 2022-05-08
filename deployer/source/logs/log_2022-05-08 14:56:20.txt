@@ -1,0 +1,42 @@
+2022-05-08 14:56:20	PARSER: Configured single uncompressing
+2022-05-08 14:56:20	PARSER: Configured single corrections
+2022-05-08 14:56:20	PARSER: Configured pattern uncompressingpattern
+2022-05-08 14:56:20	PARSER: Configured pattern correctionspattern
+2022-05-08 14:56:20	PARSER: Configured stage uncompressingstage
+2022-05-08 14:56:20	PARSER: Configured stage correctionsstage
+2022-05-08 14:56:20	PARSER: Configured workflow workflow1
+2022-05-08 14:56:20	LAUCHER: Coupling stages and building blocks
+2022-05-08 14:56:20	workflow1: Workdir workflow1
+2022-05-08 14:56:20	workflow1: Workdir exists
+2022-05-08 14:56:20	workflow1: Stage uncompressingstage added
+2022-05-08 14:56:20	uncompressingstage: Workdir uncompressingstage
+2022-05-08 14:56:20	uncompressingstage: Workdir exists
+2022-05-08 14:56:20	uncompressingstage: Added building block uncompressingpattern
+2022-05-08 14:56:20	uncompressingpattern: Workdir uncompressingpattern
+2022-05-08 14:56:20	uncompressingpattern: Workdir exists
+2022-05-08 14:56:20	uncompressing: Workdir uncompressing
+2022-05-08 14:56:20	uncompressing: Workdir exists
+2022-05-08 14:56:20	workflow1: Stage correctionsstage added
+2022-05-08 14:56:20	correctionsstage: Workdir correctionsstage
+2022-05-08 14:56:20	correctionsstage: Workdir exists
+2022-05-08 14:56:20	correctionsstage: Added source uncompressingstage
+2022-05-08 14:56:20	correctionsstage: Added building block correctionspattern
+2022-05-08 14:56:20	correctionspattern: Workdir correctionspattern
+2022-05-08 14:56:20	correctionspattern: Workdir exists
+2022-05-08 14:56:20	corrections: Workdir corrections
+2022-05-08 14:56:20	corrections: Workdir exists
+2022-05-08 14:56:20	LAUNCHER: Creating YML file at workflow1/docker-compose.yml
+2022-05-08 14:56:20	LAUNCHER: WARNING: uncompressingstage  doesn't exist or it isn't a directory
+2022-05-08 14:56:20	LAUNCHER: WARNING: /home/domizzi/Documents/BERNOULLI/data/  doesn't exist or it isn't a directory
+2022-05-08 14:56:20	LAUNCHER: WARNING: uncompressingstage  doesn't exist or it isn't a directory
+2022-05-08 14:56:20	LAUNCHER: WARNING: /home/domizzi/Documents/BERNOULLI/data/  doesn't exist or it isn't a directory
+2022-05-08 14:56:20	LAUCHER: deploying virtual containers of workflow workflow1
+2022-05-08 14:56:20	workflow1: executing 
+2022-05-08 14:56:20	uncompressingstage: waiting
+2022-05-08 14:56:20	correctionsstage: waiting
+2022-05-08 14:56:20	uncompressingstage: WORKING
+2022-05-08 14:56:20	uncompressingstageWARNING: /home/domizzi/Documents/BERNOULLI/data/  doesn't exist
+
+2022-05-08 14:56:20	uncompressingstage:  has 0 sources
+2022-05-08 14:56:20	uncompressingstage: ERROR stage does not have sources 
+2022-05-08 14:56:20	correctionsstage: ERROR stage uncompressingstage failed

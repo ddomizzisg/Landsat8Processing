@@ -1,0 +1,5 @@
+2021-08-22 19:07:58	LAUCHER: to shutdown the containers execute  
+
+docker-compose --log-level ERROR -p /home/app/results/dicomimages2 -f /home/app/results/dicomimages2/docker-compose.yml  down
+
+

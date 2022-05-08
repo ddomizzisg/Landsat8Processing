@@ -1,0 +1,23 @@
+2022-04-04 22:20:25	topng: processed 8192 bytes in ST=0.000000 RT = 5617 miliseconds
+2022-04-04 22:20:25	topngpattern: pattern executed in ST = 6280 miliseconds
+2022-04-04 22:20:25	topngstage: stage executed in ST = 6281 miliseconds
+2022-04-04 22:20:25	detectorstage: WORKING
+2022-04-04 22:20:25	detectorstageWARNING: topngstage  doesn't exist
+
+2022-04-04 22:20:25	detectorstage:  has 1 sources
+2022-04-04 22:20:25	detectorpattern: waiting
+2022-04-04 22:20:25	detectorpattern: running
+2022-04-04 22:20:25	detectorpattern: executing load balancer
+2022-04-04 22:20:25	detectorpattern: load balancer executed in RT = 705 miliseconds
+2022-04-04 22:20:25	detector: waiting
+2022-04-04 22:20:25	detector: waiting
+2022-04-04 22:20:25	detector: running
+2022-04-04 22:20:25	detector: waiting
+2022-04-04 22:20:25	detector: running
+2022-04-04 22:20:25	detector: waiting
+2022-04-04 22:20:25	detector: running
+2022-04-04 22:20:25	detector: running
+2022-04-04 22:20:25	detector: waiting
+2022-04-04 22:20:25	detector: waiting
+2022-04-04 22:20:25	detector: running
+2022-04-04 22:20:25	detector: running

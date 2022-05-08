@@ -1,0 +1,32 @@
+2021-08-22 19:01:58	PARSER: Configured single cleaning
+2021-08-22 19:01:58	PARSER: Configured single meshing
+2021-08-22 19:01:58	PARSER: Configured single dicomtojpg
+2021-08-22 19:01:58	PARSER: Configured single indexing
+2021-08-22 19:01:58	PARSER: Configured pattern indexingpattern
+2021-08-22 19:01:58	PARSER: Configured pattern dicomtojpgpattern
+2021-08-22 19:01:58	PARSER: Configured pattern meshingpattern
+2021-08-22 19:01:58	PARSER: Configured pattern cleaningpattern
+2021-08-22 19:01:58	PARSER: Configured stage dicomtojpgstage
+2021-08-22 19:01:58	PARSER: Configured stage cleaningstage
+2021-08-22 19:01:58	PARSER: Configured stage meshingstage
+2021-08-22 19:01:58	PARSER: Configured stage indexingstage
+2021-08-22 19:01:58	PARSER: Configured workflow dicomimages2
+2021-08-22 19:01:58	LAUCHER: Coupling stages and building blocks
+2021-08-22 19:01:58	dicomimages2: Workdir dicomimages2
+2021-08-22 19:01:58	dicomimages2: Workdir created
+2021-08-22 19:01:58	dicomimages2: Stage cleaningstage added
+2021-08-22 19:01:58	cleaningstage: Workdir cleaningstage
+2021-08-22 19:01:58	cleaningstage: Workdir created
+2021-08-22 19:01:58	cleaningstage: Added building block cleaningpattern
+2021-08-22 19:01:58	cleaningpattern: Workdir cleaningpattern
+2021-08-22 19:01:58	cleaningpattern: Workdir created
+2021-08-22 19:01:58	cleaning: Workdir cleaning
+2021-08-22 19:01:58	cleaning: Workdir created
+2021-08-22 19:01:58	dicomimages2: Stage meshingstage added
+2021-08-22 19:01:58	meshingstage: Workdir meshingstage
+2021-08-22 19:01:58	meshingstage: Workdir created
+2021-08-22 19:01:58	meshingstage: Added source cleaningstage
+2021-08-22 19:01:58	meshingstage: Added building block meshingpattern
+2021-08-22 19:01:58	meshingpattern: Workdir meshingpattern
+2021-08-22 19:01:58	meshingpattern: Workdir created
+2021-08-22 19:01:58	meshing: Workdir meshing

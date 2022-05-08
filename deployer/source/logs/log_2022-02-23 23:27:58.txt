@@ -1,0 +1,37 @@
+2022-02-23 23:27:58	PARSER: Configured single cleaning
+2022-02-23 23:27:58	PARSER: Configured single topng
+2022-02-23 23:27:58	PARSER: Configured pattern cleaningpattern
+2022-02-23 23:27:58	PARSER: Configured pattern topngpattern
+2022-02-23 23:27:58	PARSER: Configured stage cleaningstage
+2022-02-23 23:27:58	PARSER: Configured stage topngstage
+2022-02-23 23:27:58	PARSER: Configured workflow dicomimages2
+2022-02-23 23:27:58	LAUCHER: Coupling stages and building blocks
+2022-02-23 23:27:58	dicomimages2: Workdir dicomimages2
+2022-02-23 23:27:58	dicomimages2: Workdir exists
+2022-02-23 23:27:58	dicomimages2: Stage cleaningstage added
+2022-02-23 23:27:58	cleaningstage: Workdir cleaningstage
+2022-02-23 23:27:58	cleaningstage: Workdir exists
+2022-02-23 23:27:58	cleaningstage: Added building block cleaningpattern
+2022-02-23 23:27:58	cleaningpattern: Workdir cleaningpattern
+2022-02-23 23:27:58	cleaningpattern: Workdir exists
+2022-02-23 23:27:58	cleaning: Workdir cleaning
+2022-02-23 23:27:58	cleaning: Workdir exists
+2022-02-23 23:27:58	dicomimages2: Stage topngstage added
+2022-02-23 23:27:58	topngstage: Workdir topngstage
+2022-02-23 23:27:58	topngstage: Workdir exists
+2022-02-23 23:27:58	topngstage: Added source cleaningstage
+2022-02-23 23:27:58	topngstage: Added building block topngpattern
+2022-02-23 23:27:58	topngpattern: Workdir topngpattern
+2022-02-23 23:27:58	topngpattern: Workdir exists
+2022-02-23 23:27:58	topng: Workdir topng
+2022-02-23 23:27:58	topng: Workdir exists
+2022-02-23 23:27:58	LAUNCHER: Creating YML file at dicomimages2/docker-compose.yml
+2022-02-23 23:27:58	LAUCHER: deploying virtual containers of workflow dicomimages2
+2022-02-23 23:27:58	dicomimages2: executing 
+2022-02-23 23:27:58	cleaningstage: waiting
+2022-02-23 23:27:58	cleaningstage: WORKING
+2022-02-23 23:27:58	topngstage: waiting
+2022-02-23 23:27:58	cleaningstage: has 1 sources
+2022-02-23 23:27:58	cleaningpattern: waiting
+2022-02-23 23:27:58	cleaningpattern: running
+2022-02-23 23:27:58	cleaningpattern: executing load balancer

@@ -1,0 +1,33 @@
+2022-05-08 14:55:38	PARSER: Configured single uncompressing
+2022-05-08 14:55:38	PARSER: Configured single corrections
+2022-05-08 14:55:38	PARSER: Configured pattern uncompressingpattern
+2022-05-08 14:55:38	PARSER: Configured pattern correctionspattern
+2022-05-08 14:55:38	PARSER: Configured stage uncompressingstage
+2022-05-08 14:55:38	PARSER: Configured stage correctionsstage
+2022-05-08 14:55:38	PARSER: Configured workflow workflow1
+2022-05-08 14:55:38	LAUCHER: Coupling stages and building blocks
+2022-05-08 14:55:38	workflow1: Workdir workflow1
+2022-05-08 14:55:38	workflow1: Workdir created
+2022-05-08 14:55:38	workflow1: Stage uncompressingstage added
+2022-05-08 14:55:38	uncompressingstage: Workdir uncompressingstage
+2022-05-08 14:55:38	uncompressingstage: Workdir created
+2022-05-08 14:55:38	uncompressingstage: Added building block uncompressingpattern
+2022-05-08 14:55:38	uncompressingpattern: Workdir uncompressingpattern
+2022-05-08 14:55:38	uncompressingpattern: Workdir created
+2022-05-08 14:55:38	uncompressing: Workdir uncompressing
+2022-05-08 14:55:38	uncompressing: Workdir created
+2022-05-08 14:55:38	workflow1: Stage correctionsstage added
+2022-05-08 14:55:38	correctionsstage: Workdir correctionsstage
+2022-05-08 14:55:38	correctionsstage: Workdir created
+2022-05-08 14:55:38	correctionsstage: Added source uncompressingstage
+2022-05-08 14:55:38	correctionsstage: Added building block correctionspattern
+2022-05-08 14:55:38	correctionspattern: Workdir correctionspattern
+2022-05-08 14:55:38	correctionspattern: Workdir created
+2022-05-08 14:55:38	corrections: Workdir corrections
+2022-05-08 14:55:38	corrections: Workdir created
+2022-05-08 14:55:38	LAUNCHER: Creating YML file at workflow1/docker-compose.yml
+2022-05-08 14:55:38	LAUNCHER: WARNING: uncompressingstage  doesn't exist or it isn't a directory
+2022-05-08 14:55:38	LAUNCHER: WARNING: /home/domizzi/Documents/BERNOULLI/data/  doesn't exist or it isn't a directory
+2022-05-08 14:55:38	LAUNCHER: WARNING: uncompressingstage  doesn't exist or it isn't a directory
+2022-05-08 14:55:38	LAUNCHER: WARNING: /home/domizzi/Documents/BERNOULLI/data/  doesn't exist or it isn't a directory
+2022-05-08 14:55:38	LAUCHER: deploying virtual containers of workflow workflow1

@@ -1,0 +1,14 @@
+2022-02-23 23:33:36	cleaningpattern: load balancer executed in RT = 682 miliseconds
+2022-02-23 23:33:36	cleaning: waiting
+2022-02-23 23:33:36	cleaning: waiting
+2022-02-23 23:33:36	cleaning: waiting
+2022-02-23 23:33:36	cleaning: running
+2022-02-23 23:33:36	cleaning: running
+2022-02-23 23:33:36	cleaning: running
+2022-02-23 23:33:36	cleaning: waiting
+2022-02-23 23:33:36	cleaning: waiting
+2022-02-23 23:33:36	cleaning: running
+2022-02-23 23:33:36	cleaning: running
+2022-02-23 23:33:36	cleaning: processed 0 bytes in ST=0.000000 RT = 0 miliseconds
+2022-02-23 23:33:36	cleaning: waiting
+2022-02-23 23:33:36	cleaning: running

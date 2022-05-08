@@ -1,0 +1,5 @@
+2022-05-08 14:55:41	LAUCHER: to shutdown the containers execute  
+
+docker-compose --log-level ERROR -p /home/domizzi/Documents/geoprocindexing/deployer/source/results/workflow1 -f /home/domizzi/Documents/geoprocindexing/deployer/source/results/workflow1/docker-compose.yml  down
+
+

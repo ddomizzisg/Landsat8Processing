@@ -1,0 +1,27 @@
+2022-02-23 23:15:06	cleaning: processed 4096 bytes in ST=0.000000 RT = 1393 miliseconds
+2022-02-23 23:15:06	cleaning: processed 4096 bytes in ST=0.000000 RT = 1439 miliseconds
+2022-02-23 23:15:06	cleaning: processed 4096 bytes in ST=0.000000 RT = 1463 miliseconds
+2022-02-23 23:15:06	cleaning: processed 4096 bytes in ST=0.000000 RT = 1479 miliseconds
+2022-02-23 23:15:06	cleaning: processed 4096 bytes in ST=0.000000 RT = 1608 miliseconds
+2022-02-23 23:15:06	cleaningpattern: pattern executed in ST = 2247 miliseconds
+2022-02-23 23:15:06	cleaningstage: stage executed in ST = 2247 miliseconds
+2022-02-23 23:15:06	topngstage: WORKING
+2022-02-23 23:15:06	topngstage: has 1 sources
+2022-02-23 23:15:06	topngpattern: waiting
+2022-02-23 23:15:06	topngpattern: running
+2022-02-23 23:15:06	topngpattern: executing load balancer
+2022-02-23 23:15:06	topngpattern: load balancer executed in RT = 652 miliseconds
+2022-02-23 23:15:06	topng: waiting
+2022-02-23 23:15:06	topng: waiting
+2022-02-23 23:15:06	topng: waiting
+2022-02-23 23:15:06	topng: running
+2022-02-23 23:15:06	topng: running
+2022-02-23 23:15:06	topng: waiting
+2022-02-23 23:15:06	topng: processed 0 bytes in ST=0.000000 RT = 0 miliseconds
+2022-02-23 23:15:06	topng: waiting
+2022-02-23 23:15:06	topng: running
+2022-02-23 23:15:06	topng: running
+2022-02-23 23:15:06	topng: running
+2022-02-23 23:15:06	topng: waiting
+2022-02-23 23:15:06	topng: processed 0 bytes in ST=0.000000 RT = 0 miliseconds
+2022-02-23 23:15:06	topng: running

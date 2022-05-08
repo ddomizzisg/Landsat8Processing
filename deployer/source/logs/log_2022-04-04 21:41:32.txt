@@ -1,0 +1,14 @@
+2022-04-04 21:41:32	topngpattern: load balancer executed in RT = 706 miliseconds
+2022-04-04 21:41:32	topng: waiting
+2022-04-04 21:41:32	topng: waiting
+2022-04-04 21:41:32	topng: waiting
+2022-04-04 21:41:32	topng: running
+2022-04-04 21:41:32	topng: running
+2022-04-04 21:41:32	topng: running
+2022-04-04 21:41:32	topng: waiting
+2022-04-04 21:41:32	topng: waiting
+2022-04-04 21:41:32	topng: waiting
+2022-04-04 21:41:32	topng: running
+2022-04-04 21:41:32	topng: running
+2022-04-04 21:41:32	topng: running
+2022-04-04 21:41:32	topng: processed 0 bytes in ST=0.000000 RT = 0 miliseconds

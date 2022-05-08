@@ -1,0 +1,1 @@
+2022-04-04 22:21:56	topng: processed 8192 bytes in ST=0.000000 RT = 5299 miliseconds

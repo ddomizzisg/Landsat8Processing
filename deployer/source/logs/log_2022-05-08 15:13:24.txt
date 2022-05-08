@@ -1,0 +1,5 @@
+2022-05-08 15:13:24	uncompressingpattern: load balancer executed in RT = 1106 miliseconds
+2022-05-08 15:13:24	uncompressing: waiting
+2022-05-08 15:13:24	uncompressing: waiting
+2022-05-08 15:13:24	uncompressing: running
+2022-05-08 15:13:24	uncompressing: running

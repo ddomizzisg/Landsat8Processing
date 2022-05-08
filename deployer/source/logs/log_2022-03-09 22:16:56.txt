@@ -1,0 +1,15 @@
+2022-03-09 22:16:56	detectorpattern: load balancer executed in RT = 1342 miliseconds
+2022-03-09 22:16:56	detector: waiting
+2022-03-09 22:16:56	detector: waiting
+2022-03-09 22:16:56	detector: waiting
+2022-03-09 22:16:56	detector: waiting
+2022-03-09 22:16:56	detector: waiting
+2022-03-09 22:16:56	detector: running
+2022-03-09 22:16:56	detector: running
+2022-03-09 22:16:56	detector: waiting
+2022-03-09 22:16:56	detector: processed 0 bytes in ST=0.000000 RT = 0 miliseconds
+2022-03-09 22:16:56	detector: running
+2022-03-09 22:16:56	detector: running
+2022-03-09 22:16:56	detector: running
+2022-03-09 22:16:56	detector: running
+2022-03-09 22:16:56	detector: processed 0 bytes in ST=0.000000 RT = 0 miliseconds

@@ -1,0 +1,23 @@
+2021-08-22 19:01:59	meshing: Workdir created
+2021-08-22 19:01:59	dicomimages2: Stage dicomtojpgstage added
+2021-08-22 19:01:59	dicomtojpgstage: Workdir dicomtojpgstage
+2021-08-22 19:01:59	dicomtojpgstage: Workdir created
+2021-08-22 19:01:59	dicomtojpgstage: Added source meshingstage
+2021-08-22 19:01:59	dicomtojpgstage: Added source cleaningstage
+2021-08-22 19:01:59	dicomtojpgstage: Added building block dicomtojpgpattern
+2021-08-22 19:01:59	dicomtojpgpattern: Workdir dicomtojpgpattern
+2021-08-22 19:01:59	dicomtojpgpattern: Workdir created
+2021-08-22 19:01:59	dicomtojpg: Workdir dicomtojpg
+2021-08-22 19:01:59	dicomtojpg: Workdir created
+2021-08-22 19:01:59	dicomimages2: Stage indexingstage added
+2021-08-22 19:01:59	indexingstage: Workdir indexingstage
+2021-08-22 19:01:59	indexingstage: Workdir created
+2021-08-22 19:01:59	indexingstage: Added source dicomtojpgstage
+2021-08-22 19:01:59	indexingstage: Added source cleaningstage
+2021-08-22 19:01:59	indexingstage: Added building block indexingpattern
+2021-08-22 19:01:59	indexingpattern: Workdir indexingpattern
+2021-08-22 19:01:59	indexingpattern: Workdir created
+2021-08-22 19:01:59	indexing: Workdir indexing
+2021-08-22 19:01:59	indexing: Workdir created
+2021-08-22 19:01:59	LAUNCHER: Creating YML file at dicomimages2/docker-compose.yml
+2021-08-22 19:01:59	LAUCHER: deploying virtual containers of workflow dicomimages2

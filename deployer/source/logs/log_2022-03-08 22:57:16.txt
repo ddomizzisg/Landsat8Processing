@@ -1,0 +1,5 @@
+2022-03-08 22:57:16	LAUCHER: to shutdown the containers execute  
+
+docker-compose --log-level ERROR -p /home/fher/flujo_v1/flujo1-master/deployer/results/dicomimages2 -f /home/fher/flujo_v1/flujo1-master/deployer/results/dicomimages2/docker-compose.yml  down
+
+

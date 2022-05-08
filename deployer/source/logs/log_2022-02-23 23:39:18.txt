@@ -1,0 +1,41 @@
+2022-02-23 23:39:18	PARSER: Configured single cleaning
+2022-02-23 23:39:18	PARSER: Configured single topng
+2022-02-23 23:39:18	PARSER: Configured single detector
+2022-02-23 23:39:18	PARSER: Configured pattern cleaningpattern
+2022-02-23 23:39:18	PARSER: Configured pattern topngpattern
+2022-02-23 23:39:18	PARSER: Configured pattern detectorpattern
+2022-02-23 23:39:18	PARSER: Configured stage cleaningstage
+2022-02-23 23:39:18	PARSER: Configured stage topngstage
+2022-02-23 23:39:18	PARSER: Configured stage detectorstage
+2022-02-23 23:39:18	PARSER: Configured workflow dicomimages2
+2022-02-23 23:39:18	LAUCHER: Coupling stages and building blocks
+2022-02-23 23:39:18	dicomimages2: Workdir dicomimages2
+2022-02-23 23:39:18	dicomimages2: Workdir exists
+2022-02-23 23:39:18	dicomimages2: Stage cleaningstage added
+2022-02-23 23:39:18	cleaningstage: Workdir cleaningstage
+2022-02-23 23:39:18	cleaningstage: Workdir exists
+2022-02-23 23:39:18	cleaningstage: Added building block cleaningpattern
+2022-02-23 23:39:18	cleaningpattern: Workdir cleaningpattern
+2022-02-23 23:39:18	cleaningpattern: Workdir exists
+2022-02-23 23:39:18	cleaning: Workdir cleaning
+2022-02-23 23:39:18	cleaning: Workdir exists
+2022-02-23 23:39:18	dicomimages2: Stage topngstage added
+2022-02-23 23:39:18	topngstage: Workdir topngstage
+2022-02-23 23:39:18	topngstage: Workdir exists
+2022-02-23 23:39:18	topngstage: Added source cleaningstage
+2022-02-23 23:39:18	topngstage: Added building block topngpattern
+2022-02-23 23:39:18	topngpattern: Workdir topngpattern
+2022-02-23 23:39:18	topngpattern: Workdir exists
+2022-02-23 23:39:18	topng: Workdir topng
+2022-02-23 23:39:18	topng: Workdir exists
+2022-02-23 23:39:18	dicomimages2: Stage detectorstage added
+2022-02-23 23:39:18	detectorstage: Workdir detectorstage
+2022-02-23 23:39:18	detectorstage: Workdir exists
+2022-02-23 23:39:18	detectorstage: Added source topngstage
+2022-02-23 23:39:18	detectorstage: Added building block detectorpattern
+2022-02-23 23:39:18	detectorpattern: Workdir detectorpattern
+2022-02-23 23:39:18	detectorpattern: Workdir exists
+2022-02-23 23:39:18	detector: Workdir detector
+2022-02-23 23:39:18	detector: Workdir exists
+2022-02-23 23:39:18	LAUNCHER: Creating YML file at dicomimages2/docker-compose.yml
+2022-02-23 23:39:18	LAUCHER: deploying virtual containers of workflow dicomimages2
