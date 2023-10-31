@@ -192,7 +192,6 @@ makeflow --jx --max-local=1 workflow.jx
     * ```FUENTE_DATOS``` (línea 11): Ruta absoluta al directorio donde se encuentran las imágenes en formato tar.gz.
     * ```PATH_TO_DEPLOYER``` (línea 14): Ruta absoluta donde se encuentra el directorio ```deployer```.
 
-
     ```YAML
     version: '3'
     services:
