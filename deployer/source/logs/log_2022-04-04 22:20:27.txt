@@ -1,7 +1,0 @@
-2022-04-04 22:20:27	detector: processed 4096 bytes in ST=0.000000 RT = 1185 miliseconds
-2022-04-04 22:20:27	detector: processed 4096 bytes in ST=0.000000 RT = 1197 miliseconds
-2022-04-04 22:20:27	detector: processed 4096 bytes in ST=0.000000 RT = 1200 miliseconds
-2022-04-04 22:20:27	detector: processed 4096 bytes in ST=0.000000 RT = 1203 miliseconds
-2022-04-04 22:20:27	detector: processed 4096 bytes in ST=0.000000 RT = 1213 miliseconds
-2022-04-04 22:20:27	detectorpattern: pattern executed in ST = 1920 miliseconds
-2022-04-04 22:20:27	detectorstage: stage executed in ST = 1920 miliseconds

@@ -1,3 +1,0 @@
-2022-05-08 15:14:21	corrections: processed 8192 bytes in ST=0.000000 RT = 31788 miliseconds
-2022-05-08 15:14:21	correctionspattern: pattern executed in ST = 32381 miliseconds
-2022-05-08 15:14:21	correctionsstage: stage executed in ST = 32381 miliseconds

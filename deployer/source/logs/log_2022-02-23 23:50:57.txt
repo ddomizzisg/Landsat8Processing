@@ -1,9 +1,0 @@
-2022-02-23 23:50:57	topng: processed -2 bytes in ST=0.000000 RT = 6731 miliseconds
-2022-02-23 23:50:57	topng: processed -2 bytes in ST=0.000000 RT = 6746 miliseconds
-2022-02-23 23:50:57	topngpattern: pattern executed in ST = 7458 miliseconds
-2022-02-23 23:50:57	topngstage: stage executed in ST = 7458 miliseconds
-2022-02-23 23:50:57	detectorstage: WORKING
-2022-02-23 23:50:57	detectorstage: has 1 sources
-2022-02-23 23:50:57	detectorpattern: waiting
-2022-02-23 23:50:57	detectorpattern: running
-2022-02-23 23:50:57	detectorpattern: executing load balancer

@@ -1,3 +1,0 @@
-2022-02-23 23:51:36	detector: processed -2 bytes in ST=0.000000 RT = 38387 miliseconds
-2022-02-23 23:51:36	detectorpattern: pattern executed in ST = 39061 miliseconds
-2022-02-23 23:51:36	detectorstage: stage executed in ST = 39062 miliseconds

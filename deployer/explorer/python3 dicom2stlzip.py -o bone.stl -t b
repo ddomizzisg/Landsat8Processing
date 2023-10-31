@@ -1,1 +1,0 @@
-python3 dicom2stlzip.py -o bone.stl  -t bone  '/home/domizzi/Desktop/manifest-1608669183333/Lung-PET-CT-Dx/Lung_Dx-A0001/04-04-2007-NA-Chest-07990/3.000000-5mm-41315/'

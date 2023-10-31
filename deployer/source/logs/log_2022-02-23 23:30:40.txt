@@ -1,2 +1,0 @@
-2022-02-23 23:30:40	topng: processed -1 bytes in ST=0.000000 RT = 2750 miliseconds
-2022-02-23 23:30:40	topng: processed -1 bytes in ST=0.000000 RT = 2789 miliseconds

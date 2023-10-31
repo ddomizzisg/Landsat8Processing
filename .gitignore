@@ -1,0 +1,6 @@
+parsl/mongodbdata
+parsl/parsl/indexing/*
+parsl/parsl/uncompressed/*
+parsl/parsl/runinfo
+deployer/results
+deployer/deployer/*

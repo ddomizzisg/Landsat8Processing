@@ -1,0 +1,18 @@
+version: "3"
+services:
+  parsltest:
+    build:
+      context: ./parsl
+      dockerfile: Parsl.Dockerfile
+    command: "tail -f /dev/null"
+    volumes:
+      - "./apps:/apps"
+      - "/home/domizzi/Documents/bernoulli/data/:/DATA/"
+      - "./parsl:/parsltests"
+  mongo:
+    image: mongo:4.2
+    restart: always
+    expose:
+      - "27017/tcp"
+    volumes:
+      - "./mongodbdata:/data/db"

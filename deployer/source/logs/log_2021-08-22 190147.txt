@@ -1,6 +1,0 @@
-2021-08-22 19:01:47	PARSER: Configured single indexing
-2021-08-22 19:01:47	PARSER: Configured single meshing
-2021-08-22 19:01:47	PARSER: Configured single cleaning
-2021-08-22 19:01:47	PARSER: Configured pattern indexingpattern
-2021-08-22 19:01:47	PARSER: Configured pattern meshingpattern
-2021-08-22 19:01:47	PARSER: Configured pattern cleaningpattern

@@ -1,4 +1,0 @@
-2022-04-04 21:41:30	cleaning: processed 4096 bytes in ST=0.000000 RT = 1581 miliseconds
-2022-04-04 21:41:30	cleaning: processed 4096 bytes in ST=0.000000 RT = 1586 miliseconds
-2022-04-04 21:41:30	cleaning: processed 4096 bytes in ST=0.000000 RT = 1591 miliseconds
-2022-04-04 21:41:30	cleaning: processed 4096 bytes in ST=0.000000 RT = 1654 miliseconds

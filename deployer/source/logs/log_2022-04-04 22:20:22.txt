@@ -1,4 +1,0 @@
-2022-04-04 22:20:22	topng: processed 4096 bytes in ST=0.000000 RT = 2838 miliseconds
-2022-04-04 22:20:22	topng: processed 4096 bytes in ST=0.000000 RT = 2926 miliseconds
-2022-04-04 22:20:22	topng: processed 4096 bytes in ST=0.000000 RT = 3196 miliseconds
-2022-04-04 22:20:22	topng: processed 4096 bytes in ST=0.000000 RT = 3453 miliseconds

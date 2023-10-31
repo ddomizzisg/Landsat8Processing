@@ -1,3 +1,0 @@
-2022-02-23 23:51:21	detector: processed -1 bytes in ST=0.000000 RT = 23048 miliseconds
-2022-02-23 23:51:21	detector: processed -1 bytes in ST=0.000000 RT = 23050 miliseconds
-2022-02-23 23:51:21	detector: processed -1 bytes in ST=0.000000 RT = 23083 miliseconds

@@ -1,0 +1,15 @@
+ogr
+shapely
+xlrd
+utm
+numpy
+scipy
+flask
+Flask-API
+pymongo
+xlrd
+utm
+numpy
+scipy
+flask
+Flask-API

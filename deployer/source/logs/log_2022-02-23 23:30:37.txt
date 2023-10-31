@@ -1,8 +1,0 @@
-2022-02-23 23:30:37	cleaning: processed 8192 bytes in ST=0.000000 RT = 2712 miliseconds
-2022-02-23 23:30:37	cleaningpattern: pattern executed in ST = 3408 miliseconds
-2022-02-23 23:30:37	cleaningstage: stage executed in ST = 3408 miliseconds
-2022-02-23 23:30:37	topngstage: WORKING
-2022-02-23 23:30:37	topngstage: has 1 sources
-2022-02-23 23:30:37	topngpattern: waiting
-2022-02-23 23:30:37	topngpattern: running
-2022-02-23 23:30:37	topngpattern: executing load balancer

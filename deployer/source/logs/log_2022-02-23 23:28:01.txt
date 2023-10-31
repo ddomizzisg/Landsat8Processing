@@ -1,2 +1,0 @@
-2022-02-23 23:28:01	cleaning: processed 4096 bytes in ST=0.000000 RT = 1676 miliseconds
-2022-02-23 23:28:01	cleaning: processed 8192 bytes in ST=0.000000 RT = 2546 miliseconds

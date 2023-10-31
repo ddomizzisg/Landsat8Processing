@@ -1,22 +1,14 @@
 version: '3'
 services:
   deployer:
-    build: .
+    image: ddomizzi/deployer:v1
     tty: true
     restart: unless-stopped
-    working_dir: /home/domizzi/Documents/geoprocindexing/deployer/
+    #working_dir: /home/domizzi/Documents/geoprocindexing/deployer/
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock' #Docker deamon
-      - '/home/domizzi/Documents/geoprocindexing/deployer/:/home/domizzi/Documents/geoprocindexing/deployer/' #Deployer
-      - '/home/domizzi/Documents/Landsat8/:/home/domizzi/Documents/Landsat8/' #Data source
+      - './deployer/results:/home/app/results' #Deployer
+      - '/home/domizzi/Documents/bernoulli/data/:/home/domizzi/Documents/bernoulli/data/' #Data source
       - './cfg-files:/cfg-files' #Configuration files
-  explorer:
-    image: ddomizzi/apache:php
-    tty: true
-    ports:
-      - 8080:80
-    restart: unless-stopped
-    working_dir: /var/www/html
-    volumes:
-      - './explorer:/var/www/html'
-      - './source/results/:/var/www/html/data'
+    environment:
+      HOST_PATH: /home/domizzi/Documents/GitHub/Landsat8Processing/deployer

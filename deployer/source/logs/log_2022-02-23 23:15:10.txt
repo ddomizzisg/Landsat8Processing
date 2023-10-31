@@ -1,4 +1,0 @@
-2022-02-23 23:15:10	topng: processed -2 bytes in ST=0.000000 RT = 3848 miliseconds
-2022-02-23 23:15:10	topng: processed -2 bytes in ST=0.000000 RT = 3940 miliseconds
-2022-02-23 23:15:10	topngpattern: pattern executed in ST = 4593 miliseconds
-2022-02-23 23:15:10	topngstage: stage executed in ST = 4594 miliseconds

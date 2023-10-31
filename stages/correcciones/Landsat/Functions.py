@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import gdal, os, scipy
-from gdalconst import *
+from osgeo import gdal
+import os, scipy
+#from gdalconst import *
 
 import numpy as np
 import scipy.ndimage, scipy.stats
 import numpy.ma as ma
 
-import osr, datetime
+
+from osgeo import osr
+import datetime
 import xlrd, string, math, random
 import subprocess
 
@@ -139,7 +142,7 @@ def array_to_raster(inTiff,array,outFile,dataType=gdal.GDT_Float32):
     output.SetProjection( srs.ExportToWkt() )
 
 
-    # inDataset = gdal.Open(inTiff, GA_ReadOnly)
+    # inDataset = gdal.Open(inTiff, gdal.GA_ReadOnly)
     #
     # # You need to get those values like you did.
     # x_pixels = inDataset.RasterXSize  # number of pixels in x
@@ -317,8 +320,8 @@ def linReg2(inList1,inList2,outFol=".../outFol/"):
         refRas1 = inList1[0]
         refRas2 = inList2[0]
 
-        firstRasGDAL1 = gdal.Open(refRas1, GA_ReadOnly)
-        firstRasGDAL2 = gdal.Open(refRas2, GA_ReadOnly)
+        firstRasGDAL1 = gdal.Open(refRas1, gdal.GA_ReadOnly)
+        firstRasGDAL2 = gdal.Open(refRas2, gdal.GA_ReadOnly)
 
         proj1 = osr.SpatialReference()
         proj1.ImportFromWkt(firstRasGDAL1.GetProjectionRef())
@@ -363,7 +366,7 @@ def linReg2(inList1,inList2,outFol=".../outFol/"):
                 newTif1 = reproject_dataset(dataset, refRas1, te=intersection, outFol = outFol + "Scratch/")
                 nameList1.append(newTif1)
                 for x in nameList1:
-                    dataset = gdal.Open(x, GA_ReadOnly)
+                    dataset = gdal.Open(x, gdal.GA_ReadOnly)
                     cols = firstRasGDAL1.RasterXSize
                     rows = firstRasGDAL1.RasterYSize
                     array = dataset.ReadAsArray(0, 0, cols, rows)
@@ -379,10 +382,10 @@ def linReg2(inList1,inList2,outFol=".../outFol/"):
 
                 #Define new first raster, as reprojection might have changed things
                 nameList2FirstRas = nameList2[0]   #specs might have changed
-                nameList2FirstGDAL = gdal.Open(nameList2FirstRas, GA_ReadOnly)
+                nameList2FirstGDAL = gdal.Open(nameList2FirstRas, gdal.GA_ReadOnly)
 
                 for x in nameList2:
-                    dataset = gdal.Open(x, GA_ReadOnly)
+                    dataset = gdal.Open(x, gdal.GA_ReadOnly)
                     cols = nameList2FirstGDAL.RasterXSize
                     rows = nameList2FirstGDAL.RasterYSize
                     array = dataset.ReadAsArray(0, 0, cols, rows)
@@ -447,8 +450,8 @@ def linReg2(inList1,inList2,outFol=".../outFol/"):
             firstNewRas1 = newList1[0]
             firstNewRas2 = newList2[0]
 
-            firstNewRasGDAL1 = gdal.Open(firstNewRas1, GA_ReadOnly)
-            firstNewRasGDAL2 = gdal.Open(firstNewRas2, GA_ReadOnly)
+            firstNewRasGDAL1 = gdal.Open(firstNewRas1, gdal.GA_ReadOnly)
+            firstNewRasGDAL2 = gdal.Open(firstNewRas2, gdal.GA_ReadOnly)
 
             cols1 = firstNewRasGDAL1.RasterXSize
             rows1 = firstNewRasGDAL1.RasterYSize
@@ -464,13 +467,13 @@ def linReg2(inList1,inList2,outFol=".../outFol/"):
 
             list1 = []
             for file in newList1:
-                dataset = gdal.Open(file, GA_ReadOnly)
+                dataset = gdal.Open(file, gdal.GA_ReadOnly)
                 array = dataset.ReadAsArray(0, 0, cols1, rows1)
                 list1.append(array)
 
             list2 = []
             for file in newList2:
-                dataset = gdal.Open(file, GA_ReadOnly)
+                dataset = gdal.Open(file, gdal.GA_ReadOnly)
                 array = dataset.ReadAsArray(0, 0, cols2, rows2)
                 list2.append(array)
 
@@ -487,13 +490,13 @@ def linReg2(inList1,inList2,outFol=".../outFol/"):
 
             list1 = [] #reset list1 and fill it with arrays
             for x in inList1:
-                dataset = gdal.Open(x, GA_ReadOnly)
+                dataset = gdal.Open(x, gdal.GA_ReadOnly)
                 array = dataset.ReadAsArray(0, 0, cols1, rows1)
                 list1.append(array)
 
             list2 = [] #reset list2 and fill it with arrays
             for x in inList2:
-                dataset = gdal.Open(x, GA_ReadOnly)
+                dataset = gdal.Open(x, gdal.GA_ReadOnly)
                 array = dataset.ReadAsArray(0, 0, cols2, rows2)
                 list2.append(array)
 
@@ -649,7 +652,7 @@ def tiffToarray(inFol, ifStatm = True, printOut = False, inFormat = "tif"):
         if allRasters[-3:] == "tif":
             firstRasStr = inFol + allRasters
             break
-    firstRasGDAL = gdal.Open(firstRasStr, GA_ReadOnly)
+    firstRasGDAL = gdal.Open(firstRasStr, gdal.GA_ReadOnly)
     cols = firstRasGDAL.RasterXSize
     rows = firstRasGDAL.RasterYSize
 
@@ -659,7 +662,7 @@ def tiffToarray(inFol, ifStatm = True, printOut = False, inFormat = "tif"):
             if printOut:
                 print(files)
             fileIn = inFol + files
-            dataset = gdal.Open(fileIn, GA_ReadOnly)
+            dataset = gdal.Open(fileIn, gdal.GA_ReadOnly)
             array = dataset.ReadAsArray(0, 0, cols, rows)
 
             finList.append(array)
@@ -679,11 +682,12 @@ def tiffToarray(inFol, ifStatm = True, printOut = False, inFormat = "tif"):
 def singleTifToArray(inRas):
 
 
-    firstRasGDAL = gdal.Open(inRas, GA_ReadOnly)
+    firstRasGDAL = gdal.Open(inRas, gdal.GA_ReadOnly)
+    print(firstRasGDAL)
     cols = firstRasGDAL.RasterXSize
     rows = firstRasGDAL.RasterYSize
 
-    dataset = gdal.Open(inRas, GA_ReadOnly)
+    dataset = gdal.Open(inRas, gdal.GA_ReadOnly)
     array = dataset.ReadAsArray(0, 0, cols, rows)
 
     return array
@@ -764,11 +768,11 @@ def hdfTOtif(nameHDF, outFile, subset=0, slicing = [0,0,0,0]):
 
 
     # open Dataset
-    inDS = gdal.Open(nameHDF, GA_ReadOnly)
+    inDS = gdal.Open(nameHDF, gdal.GA_ReadOnly)
 
     # extract the subset to convert
     try:
-        inHDF = gdal.Open(inDS.GetSubDatasets()[subset][0], GA_ReadOnly)
+        inHDF = gdal.Open(inDS.GetSubDatasets()[subset][0], gdal.GA_ReadOnly)
     except:
         inHDF = inDS
 
@@ -939,7 +943,7 @@ def ReprojectCoords(coords,src_srs,tgt_srs):
     #http://www.samuelbosch.com/2009/05/projections-and-transformation-2.html
     #Coordinate System can be calculated e.g. using the following (equivalent for second raster)
     # rasWGS = "D:/Test/twoFol/reProj/2000_WGS84.tif"
-    # gdWGS = gdal.Open(rasWGS, GA_ReadOnly)
+    # gdWGS = gdal.Open(rasWGS, gdal.GA_ReadOnly)
     # src_srs = osr.SpatialReference()
     # src_srs.ImportFromWkt(gdWGS.GetProjectionRef())
 
@@ -996,12 +1000,12 @@ def my_intersect(input1,input2):
 
     #test if input is a string (filepath) or already gdal Dataset
     if type(input1) == str:
-        gd1 = gdal.Open(input1, GA_ReadOnly)
+        gd1 = gdal.Open(input1, gdal.GA_ReadOnly)
     else:
         gd1 = input1
 
     if type(input2) == str:
-        gd2 = gdal.Open(input2, GA_ReadOnly)
+        gd2 = gdal.Open(input2, gdal.GA_ReadOnly)
     else:
         gd2 = input2
 
@@ -1013,7 +1017,7 @@ def my_intersect(input1,input2):
 
     if (gd1.GetProjectionRef() != gd2.GetProjectionRef()):
         projectedRas = reproject_dataset(input1,input2)
-        gd1 = gdal.Open(projectedRas, GA_ReadOnly)
+        gd1 = gdal.Open(projectedRas, gdal.GA_ReadOnly)
         #print("gd2 is now :", projectedRas)
 
         #transform = osr.CoordinateTransformation(proj2, proj1)
@@ -1070,12 +1074,12 @@ def reproject_dataset ( inRas, newProjDS , te=0, name = "x", outFol = "D:/Test/S
 
 
     if type(newProjDS) == str:
-        ingd = gdal.Open(newProjDS, GA_ReadOnly)
+        ingd = gdal.Open(newProjDS, gdal.GA_ReadOnly)
     else:
         ingd = newProjDS
 
     if type(inRas) == str:
-        oldRasDS = gdal.Open(inRas, GA_ReadOnly)
+        oldRasDS = gdal.Open(inRas, gdal.GA_ReadOnly)
     else:
         oldRasDS = inRas
 

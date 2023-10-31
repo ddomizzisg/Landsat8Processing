@@ -1,4 +1,0 @@
-2022-02-23 22:57:13	cleaning: processed 8192 bytes in ST=0.000000 RT = 2182 miliseconds
-2022-02-23 22:57:13	cleaning: processed 8192 bytes in ST=0.000000 RT = 2426 miliseconds
-2022-02-23 22:57:13	cleaningpattern: pattern executed in ST = 3039 miliseconds
-2022-02-23 22:57:13	cleaningstage: stage executed in ST = 3039 miliseconds

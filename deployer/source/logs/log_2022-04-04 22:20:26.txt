@@ -1,1 +1,0 @@
-2022-04-04 22:20:26	detector: processed 4096 bytes in ST=0.000000 RT = 910 miliseconds
