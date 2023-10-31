@@ -33,6 +33,7 @@ makeflow --jx --max-local=1 workflow.jx
 
 ## Ejecución Parsl
 
+```
 📦parsl
  ┣ 📂mongodbdata
  ┣ 📂parsl
@@ -46,7 +47,7 @@ makeflow --jx --max-local=1 workflow.jx
  ┃ ┣ 📜Parsl.Dockerfile
  ┃ ┗ 📜parslflow.py
  ┗ 📜docker-compose.yml
-
+```
 
 1. Dirigirse a la carpeta parsl y modificar la línea 9 del archivo ```docker-compose.yml``` con la ruta a los datos.
 
@@ -100,34 +101,14 @@ makeflow --jx --max-local=1 workflow.jx
 
 ## Ejecución Nez
 
+```
 📦deployer
- ┣ 📂cfg-files
+ ┣ 📂cfg-files <- Configuration files
  ┃ ┗ 📜configuration.cfg
- ┣ 📂deployer
- ┃ ┗ 📂results
- ┃ ┃ ┗ 📂workflow1
- ┃ ┃ ┃ ┣ 📂correctionsstage
- ┃ ┃ ┃ ┃ ┗ 📂correctionspattern
- ┃ ┃ ┃ ┃ ┃ ┗ 📂corrections
- ┃ ┃ ┃ ┣ 📂uncompressingstage
- ┃ ┃ ┃ ┃ ┗ 📂uncompressingpattern
- ┃ ┃ ┃ ┃ ┃ ┗ 📂uncompressing
- ┃ ┃ ┃ ┣ 📜COBIT 5_compliance_graph.png
- ┃ ┃ ┃ ┣ 📜COBIT 5_report.txt
- ┃ ┃ ┃ ┣ 📜ISO 27001-13_compliance_graph.png
- ┃ ┃ ┃ ┣ 📜ISO 27001-13_report.txt
- ┃ ┃ ┃ ┣ 📜NIST_compliance_graph.png
- ┃ ┃ ┃ ┣ 📜NIST_report.txt
- ┃ ┃ ┃ ┣ 📜Norma Oficial Mexicana NOM-024-SSA3-2010_compliance_graph.png
- ┃ ┃ ┃ ┣ 📜Norma Oficial Mexicana NOM-024-SSA3-2010_report.txt
- ┃ ┃ ┃ ┣ 📜docker-compose.yml
- ┃ ┃ ┃ ┣ 📜downloads.txt
- ┃ ┃ ┃ ┣ 📜normas.txt
- ┃ ┃ ┃ ┣ 📜stages.json
- ┃ ┃ ┃ ┗ 📜uploads.txt
- ┣ 📂results
+ ┣ 📂results <- Deployment and execution results
  ┣ 📜Dockerfile
  ┗ 📜docker-compose.yml
+```
 
 1. Dirigirse a la carpeta stages y ejecutar el archivo ```build.sh``` para construir las imágenes de contenedor.
 
