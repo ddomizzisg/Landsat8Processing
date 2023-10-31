@@ -33,7 +33,6 @@ makeflow --jx --max-local=1 workflow.jx
 
 ## Ejecución Parsl
 
-```
 📦parsl
  ┣ 📂mongodbdata
  ┣ 📂parsl
@@ -47,7 +46,7 @@ makeflow --jx --max-local=1 workflow.jx
  ┃ ┣ 📜Parsl.Dockerfile
  ┃ ┗ 📜parslflow.py
  ┗ 📜docker-compose.yml
-```
+
 
 1. Dirigirse a la carpeta parsl y modificar la línea 9 del archivo ```docker-compose.yml``` con la ruta a los datos.
 
