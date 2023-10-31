@@ -100,6 +100,35 @@ makeflow --jx --max-local=1 workflow.jx
 
 ## Ejecución Nez
 
+📦deployer
+ ┣ 📂cfg-files
+ ┃ ┗ 📜configuration.cfg
+ ┣ 📂deployer
+ ┃ ┗ 📂results
+ ┃ ┃ ┗ 📂workflow1
+ ┃ ┃ ┃ ┣ 📂correctionsstage
+ ┃ ┃ ┃ ┃ ┗ 📂correctionspattern
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂corrections
+ ┃ ┃ ┃ ┣ 📂uncompressingstage
+ ┃ ┃ ┃ ┃ ┗ 📂uncompressingpattern
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂uncompressing
+ ┃ ┃ ┃ ┣ 📜COBIT 5_compliance_graph.png
+ ┃ ┃ ┃ ┣ 📜COBIT 5_report.txt
+ ┃ ┃ ┃ ┣ 📜ISO 27001-13_compliance_graph.png
+ ┃ ┃ ┃ ┣ 📜ISO 27001-13_report.txt
+ ┃ ┃ ┃ ┣ 📜NIST_compliance_graph.png
+ ┃ ┃ ┃ ┣ 📜NIST_report.txt
+ ┃ ┃ ┃ ┣ 📜Norma Oficial Mexicana NOM-024-SSA3-2010_compliance_graph.png
+ ┃ ┃ ┃ ┣ 📜Norma Oficial Mexicana NOM-024-SSA3-2010_report.txt
+ ┃ ┃ ┃ ┣ 📜docker-compose.yml
+ ┃ ┃ ┃ ┣ 📜downloads.txt
+ ┃ ┃ ┃ ┣ 📜normas.txt
+ ┃ ┃ ┃ ┣ 📜stages.json
+ ┃ ┃ ┃ ┗ 📜uploads.txt
+ ┣ 📂results
+ ┣ 📜Dockerfile
+ ┗ 📜docker-compose.yml
+
 1. Dirigirse a la carpeta stages y ejecutar el archivo ```build.sh``` para construir las imágenes de contenedor.
 
     ```bash
@@ -217,20 +246,20 @@ makeflow --jx --max-local=1 workflow.jx
 
 4. Despliega los contenedores del flujo con:
 
-    ```console
-    root@53270c4ee812:/home/app# ./puzzlemesh/puzzlemesh -m compose -c /cfg-files/configuration.cfg
+    ```bash
+    ./puzzlemesh/puzzlemesh -m compose -c /cfg-files/configuration.cfg
     ```
 
 En ```/PATH/TO/DEPLOYER/results``` verás que se crearon un conjunto de directorios, el cual es el espacio de trabajo de cada contenedor. Aquí se escribirán los resultados de la ejecución.
 
 5. Ejecuta los contenedores con: 
 
-    ```console
-    root@53270c4ee812:/home/app# ./puzzlemesh/puzzlemesh -m compose -c /cfg-files/configuration.cfg -exec True
+    ```bash
+    ./puzzlemesh/puzzlemesh -m compose -c /cfg-files/configuration.cfg -exec True
     ```
 
 6. Para detener los contenedores del flujo ejecuta:
 
-    ```console
-    root@53270c4ee812:/home/app# ./puzzlemesh/puzzlemesh -m compose -c /cfg-files/configuration.cfg -stop True
+    ```bash
+    ./puzzlemesh/puzzlemesh -m compose -c /cfg-files/configuration.cfg -stop True
     ```

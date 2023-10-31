@@ -7,8 +7,8 @@ services:
     #working_dir: /home/domizzi/Documents/geoprocindexing/deployer/
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock' #Docker deamon
-      - './deployer/results:/home/app/results' #Deployer
+      - './results:/home/app/results' #Deployer
       - '/home/domizzi/Documents/bernoulli/data/:/home/domizzi/Documents/bernoulli/data/' #Data source
       - './cfg-files:/cfg-files' #Configuration files
     environment:
-      HOST_PATH: /home/domizzi/Documents/GitHub/Landsat8Processing/deployer
+      HOST_PATH: /home/domizzi/Documents/GitHub/Landsat8Processing/deployer/
