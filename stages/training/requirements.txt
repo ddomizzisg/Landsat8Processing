@@ -1,0 +1,8 @@
+flask
+Flask-API
+requests
+rasterio
+scikit-learn
+numpy
+scikit-image
+matplotlib

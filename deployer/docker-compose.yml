@@ -8,7 +8,14 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock' #Docker deamon
       - './results:/home/app/results' #Deployer
-      - '/home/domizzi/Documents/bernoulli/data/:/home/domizzi/Documents/bernoulli/data/' #Data source
+      - '/home/domizzi/Documents/GitHub/Landsat8Processing/stages/download/data/:/home/domizzi/Documents/GitHub/Landsat8Processing/stages/download/data/' #Data source
       - './cfg-files:/cfg-files' #Configuration files
     environment:
       HOST_PATH: /home/domizzi/Documents/GitHub/Landsat8Processing/deployer/
+  mongo:
+    image: mongo:4.2
+    restart: always
+    expose:
+        - "27017/tcp"
+    volumes:
+        - "./mongodbdata:/data/db"

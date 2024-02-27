@@ -12,7 +12,7 @@ RUN pip install -r /installation/requirements.txt
 ADD ./API /API
 WORKDIR  /API
 
-RUN apt-get install -y curl
+RUN apt-get update && apt-get install -y curl
 RUN apt-get install python3-psycopg2
 
 EXPOSE 5000

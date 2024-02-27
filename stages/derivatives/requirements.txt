@@ -1,0 +1,10 @@
+xlrd
+utm
+numpy
+scipy
+flask==2.2.2
+Werkzeug==2.3.7
+Flask-API
+rasterio
+matplotlib
+earthpy

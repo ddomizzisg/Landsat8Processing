@@ -4,3 +4,7 @@ parsl/parsl/uncompressed/*
 parsl/parsl/runinfo
 deployer/results
 deployer/deployer/*
+deployer/mongodbdata
+*.pyc
+stages/download/
+*.tar
