@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon Sep 26 20:13:37 CDT 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instance a816c00e-0183-7c81-af26-00001e3087c0 
+on database directory /home/domizzi/Documents/PRONACES/puzzle/deployer/app/data with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@5cb0d902 
+Loaded from file:/home/domizzi/Documents/PRONACES/puzzle/deployer/app/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=17.0.4.1+1-LTS-2
+user.dir=/home/domizzi/Documents/PRONACES/puzzle/deployer/app
+os.name=Linux
+os.arch=amd64
+os.version=5.19.0-76051900-generic
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

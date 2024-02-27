@@ -1,0 +1,14 @@
+version: "3"
+services:
+  segmenter:
+    image: kulla:code
+    command: "tail -f /dev/null"
+    restart: unless-stopped
+    volumes:
+      - "./uploads/c1:/home/Volume/chunk1/"
+      - "./uploads/c2:/home/Volume/chunk2/"
+      - "./uploads/c3:/home/Volume/chunk3/"
+      - "./uploads/c4:/home/Volume/chunk4/"
+      - "./uploads/c5:/home/Volume/chunk5/"
+      - "../results:/home/Volume/Up/"
+      
