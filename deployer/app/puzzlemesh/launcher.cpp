@@ -377,7 +377,9 @@ void Launcher::getVolumes(BuildingBlock *b, string target, set<vector<string>> &
 
 void Launcher::buildYML(string mode)
 {
-	string yml_base, links, auxPath, pwdStr, imageservice, restservice, volumesservice, portsservice, nameservice;
+
+	string yml_base = {"version: \'3\'\nservices:\n"};
+	string links, auxPath, pwdStr, imageservice, restservice, volumesservice, portsservice, nameservice;
 	ofstream yml;
 	vector<string> ports;
 	BuildingBlock *bb;
@@ -387,18 +389,18 @@ void Launcher::buildYML(string mode)
 
 	pwdStr = this->workpath;
 
-	if (boost::iequals(mode, "swarm"))
+	Logger("LAUNCHER: Creating YML file at " + this->workflow->getWorkdir() + "/docker-compose.yml", true);
+
+	/*if (boost::iequals(mode, "swarm"))
 	{
 		yml_base = {"version: \'3\'\nservices:\n"};
 	}
 	else
 	{
 		yml_base = {"version: \'2.4\'\nservices:\n"};
-	}
+	}*/
 
-	Logger("LAUNCHER: Creating YML file at " + this->workflow->getWorkdir() + "/docker-compose.yml", true);
-
-	yml.open(pwdStr + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml");
+	yml.open(this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml");
 
 	ifstream test;
 
@@ -420,7 +422,7 @@ void Launcher::buildYML(string mode)
 
 				restservice = "        restart: always\n";
 				restservice += "        expose:\n            - \"5000/tcp\"\n";
-				restservice += "        cpus: 1\n";
+				//restservice += "        cpus: 1\n";
 				restservice += "        volumes:\n";
 				restservice += "            - \"" + pwdStr + "/results/" + this->workflow->getWorkdir() + ":" + pwdStr + "/results/" + this->workflow->getWorkdir() + "\"\n";
 				volumesservice = "";
@@ -456,27 +458,6 @@ void Launcher::buildYML(string mode)
 			}
 		}
 	}
-
-	/*for (auto x : singles)
-	{
-		yml_base += "    " + x.second->getName() + ": \n";
-
-		if (boost::iequals(mode, "swarm"))
-		{
-			yml_base += "        image: 127.0.0.1:5000/" + x.second->getImage() + "\n";
-		}
-		else
-		{
-			yml_base += "        image: " + x.second->getImage() + "\n";
-		}
-
-		
-
-		
-
-		
-	}
-	*/
 
 	for (auto x : patterns)
 	{
@@ -520,17 +501,17 @@ void Launcher::buildYML(string mode)
 			// yml_base += "            - \""+x.second->getSink()+":"+x.second->getSink()+"\"\n";
 			//yml_base += "        links:\n";
 			//yml_base += "            - " + x.second->getWorker()->getName() + "\n";
-			links += "             - lb" + x.second->getName() + "\n";
+			//links += "             - lb" + x.second->getName() + "\n";
 		}
 	}
 
 	if (boost::iequals(mode, "swarm"))
 	{
-		yml_base += "    proxy:\n        image: 127.0.0.1:5000/microservice:base\n        links:\n" + links;
+		yml_base += "    proxy:\n        image: 127.0.0.1:5000/microservice:base\n";//        links:\n" + links;
 	}
 	else
 	{
-		yml_base += "    proxy:\n        image: microservice:base\n        links:\n" + links;
+		yml_base += "    proxy:\n        image: microservice:base\n ";//       links:\n" + links;
 	}
 	
 	yml << yml_base << endl;

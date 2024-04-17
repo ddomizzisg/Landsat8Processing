@@ -89,7 +89,7 @@ results Single::execute(string workdirbase, vector<string> contents, string comp
         // }
         // else
         // {
-            j = this->processFile(workdirbase, c, compose_command);
+            j = this->processFile(workdirbase, c, compose_command, id_worker);
         // }
         // totalTime += stof(j["response_time"].dump());
         sizeTotal += stol(j["size"].dump());

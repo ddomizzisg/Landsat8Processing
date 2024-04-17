@@ -8,3 +8,4 @@ deployer/mongodbdata
 *.pyc
 stages/download/
 *.tar
+res*

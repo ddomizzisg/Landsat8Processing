@@ -1,17 +1,18 @@
 version: '3'
 services:
   deployer:
-    image: ddomizzi/deployer:v1
+    image: ddomizzi/deployernez:v1
     tty: true
     restart: unless-stopped
     #working_dir: /home/domizzi/Documents/geoprocindexing/deployer/
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock' #Docker deamon
       - './results:/home/app/results' #Deployer
-      - '/home/domizzi/Documents/GitHub/Landsat8Processing/stages/download/data/:/home/domizzi/Documents/GitHub/Landsat8Processing/stages/download/data/' #Data source
+      - '/home/dsanchez/downloadlandsat/data/:/home/dsanchez/downloadlandsat/data/' #Data source
       - './cfg-files:/cfg-files' #Configuration files
+      - './app/:/home/app'
     environment:
-      HOST_PATH: /home/domizzi/Documents/GitHub/Landsat8Processing/deployer/
+      HOST_PATH: /home/dsanchez/Landsat8Processing/deployer
   mongo:
     image: mongo:4.2
     restart: always
