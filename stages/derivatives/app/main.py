@@ -144,7 +144,7 @@ def ndwi(band3_path, band5_path, output):
     np.unique(ndwi_landsat_class)
 
     # Define color map
-    ndwi_colors = ["gray", "lightgreen", "seagreen", "b", "darkblue"]
+    ndwi_colors = ["gray", "lightskyblue", "skyblue", "b", "darkblue"]
     ndwi_cmap = ListedColormap(ndwi_colors)
 
     # Define class names
@@ -167,10 +167,10 @@ def ndwi(band3_path, band5_path, output):
     im = ax.imshow(ndwi_landsat_class, cmap=ndwi_cmap)
 
     ep.draw_legend(im_ax=im, classes=classes_ndwi, titles=ndwi_cat_names)
-    ax.set_title(
-        "Landsat 8 - Normalized Difference Water Index (NDWI) Classes",
-        fontsize=14,
-    )
+    #ax.set_title(
+    #    "Landsat 8 - Normalized Difference Water Index (NDWI) Classes",
+    #    fontsize=14,
+    #)
     ax.set_axis_off()
 
     plt.tight_layout()
