@@ -6,6 +6,7 @@ deployer/results
 deployer/deployer/*
 deployer/mongodbdata
 *.pyc
-stages/download/
+stages/download/data
+stages/download/venv
 *.tar
 res*

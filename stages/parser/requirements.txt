@@ -7,4 +7,4 @@ scipy
 flask==2.3.3
 Flask-API
 pymongo
-werkzeug===2.3.7
+werkzeug==2.3.7
