@@ -158,7 +158,7 @@ void BuildingBlock::execute(string workdirbase, vector<string> sourcesPaths)
 
 string BuildingBlock::exec_cmd(const char *cmd)
 {
-    //cout << cmd << endl;
+    cout << cmd << endl;
     std::array<char, 128> buffer;
     std::string result;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);

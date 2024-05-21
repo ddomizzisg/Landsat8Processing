@@ -1,0 +1,8 @@
+numpy
+flask==2.2.2
+Werkzeug==2.3.7
+Flask-API
+rasterio
+matplotlib
+pandas
+scikit-learn

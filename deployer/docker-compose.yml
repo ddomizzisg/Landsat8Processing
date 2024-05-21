@@ -18,5 +18,7 @@ services:
     restart: always
     expose:
         - "27017/tcp"
+    ports:
+      - "27017:27017"
     volumes:
         - "./mongodbdata:/data/db"

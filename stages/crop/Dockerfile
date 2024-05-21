@@ -14,7 +14,8 @@ WORKDIR /app
 RUN mkdir /inputs
 RUN mkdir /outputs
 #export dependencies
-
+#RUN export PYTHONPATH=/app/GDAL_Python3
+RUN PYTHONPATH="/app/GDAL_Python3"
 
 ADD ./API /API
 WORKDIR  /API
