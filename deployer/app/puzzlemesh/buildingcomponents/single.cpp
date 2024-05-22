@@ -67,16 +67,17 @@ results Single::execute(string workdirbase, vector<string> contents, string comp
     float totalTime;
     long sizeTotal;
     json j;
+    string logs;
     vector<string> filesInDir;
-    Logger(this->name + ": waiting", true);
-    this->state = WAITING;
+    //Logger(this->name + ": waiting", true);
+    //this->state = WAITING;
 
-    this->state = WORKING;
-    Logger(this->name + ": running", true);
+    //this->state = WORKING;
+    //Logger(this->name + ": running", true);
 
     totalTime = 0;
     sizeTotal = 0;
-    auto start = chrono::steady_clock::now();
+    //auto start = chrono::steady_clock::now();
     for (auto c : contents)
     {
         // if (isDir(c))
@@ -95,10 +96,10 @@ results Single::execute(string workdirbase, vector<string> contents, string comp
         sizeTotal += stol(j["size"].dump());
         //Logger(this->name + ": executed in ST=" + json_result["response_time"].dump() + " RT = " + ::to_string(chrono::duration_cast<chrono::milliseconds>(end - start).count()) + " miliseconds", true);
     }
-    auto end = chrono::steady_clock::now();
+    //auto end = chrono::steady_clock::now();
     double th = sizeTotal / totalTime;
-    Logger(this->name + ": processed " + ::to_string(sizeTotal) + " bytes in ST=" + ::to_string(totalTime) + " RT = " + ::to_string(chrono::duration_cast<chrono::milliseconds>(end - start).count()) + " miliseconds", true);
-    this->state = COMPLETED;
+    //Logger(this->name + ": processed " + ::to_string(sizeTotal) + " bytes in ST=" + ::to_string(totalTime) + " RT = " + ::to_string(chrono::duration_cast<chrono::milliseconds>(end - start).count()) + " miliseconds", true);
+    //this->state = COMPLETED;
     results rs;
     rs.size = sizeTotal;
     rs.th = th;

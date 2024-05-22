@@ -89,7 +89,7 @@ void Pattern::execute(string workdirbase, vector<string> sourcesPaths, string co
     Logger(this->name + ": load balancer executed in RT = " + ::to_string(chrono::duration_cast<chrono::milliseconds>(end - start).count()) + " miliseconds", true);
     auto elements = json_result["result"];
     // cout << data << endl;
-    cout << json_result["result"] << endl;
+    //cout << json_result["result"] << endl;
     //result.substr(1, result.size() - 1);
     // auto elements = json::parse(result);
     // cout << "aqui" << endl;
