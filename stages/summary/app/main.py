@@ -40,27 +40,33 @@ def get_summary(input_path, output):
         # open the images
         path_to_image = join(d, f"ndwi_red_b7{dir_name}.tif")
         
-        with rasterio.open(path_to_image) as src:
-            image = src.read(1)
-            meta = src.meta
+        if os.path.exists(path_to_image):
         
-        # show image
-        water_threshold = 0.7
-        water_mask = image > water_threshold
-        print(water_mask)
-        n_rows, n_cols = water_mask.shape
-        #print(year, np.sum(water_mask), n_rows * n_cols)
-        # Calculate the pixel area (in square meters)
-        pixel_area = src.res[0] * src.res[1]
-        print(pixel_area, src.res[0], src.res[1])
-        water_area = np.sum(water_mask) * 100 / (n_rows * n_cols) #* pixel_area #* 100 / (n_rows * n_cols)
-        
-        #convert to km^2
-        #water_area = water_area / 1000000
-        
-        
-        #data_frame = data_frame.append({"year": year, "month": month, "day": day, "water_area": np.sum(water_mask_2013) * pixel_area}, ignore_index=True)
-        data_frame.loc[len(data_frame.index)] = [path, row, year, month, day, water_area]
+            with rasterio.open(path_to_image) as src:
+                image = src.read(1)
+                meta = src.meta
+            
+            # show image
+            water_threshold = 0.5
+            image = normalize(image)
+            print("Uniques",np.unique(image))
+            water_mask = image > water_threshold
+            print(water_mask)
+            n_rows, n_cols = water_mask.shape
+            #print(year, np.sum(water_mask), n_rows * n_cols)
+            # Calculate the pixel area (in square meters)
+            pixel_area = src.res[0] * src.res[1]
+            print(pixel_area, src.res[0], src.res[1])
+            water_area = np.sum(water_mask) * 100 / (n_rows * n_cols) #* pixel_area #* 100 / (n_rows * n_cols)
+            
+            #convert to km^2
+            #water_area = water_area / 1000000
+            
+            
+            #data_frame = data_frame.append({"year": year, "month": month, "day": day, "water_area": np.sum(water_mask_2013) * pixel_area}, ignore_index=True)
+            data_frame.loc[len(data_frame.index)] = [path, row, year, month, day, water_area]
+        else:
+            print("Not exists", path_to_image)
         
     data_frame.sort_values(by=["year", "month", "day"], inplace=True, ascending=[True, True, True])
     paths = data_frame["path"].unique()
@@ -85,15 +91,26 @@ def get_summary(input_path, output):
             
         plt.clf()
         
+        
+
+        
         fig = plt.figure()
         fig.set_size_inches(fig_size)
-       
-        plt.scatter(X, Y, label="Real Data")
+        #plt.rcParams.update({'font.size': 20})  # Adjust the font size as needed
+        plt.scatter(X, Y,  label="Real Data")
+        
+        # Set the x and y ranges
+        plt.xlim(min(X) - 1, max(X) + 1)  # Set x-axis range dynamically
+        plt.ylim(min(Y) - 5, max(Y) + 5)  # Set y-axis range dynamically
+
 
         plt.plot(X, Y_pred, color='red', label="Linear Regression")
-        plt.legend(loc="upper right")
-        plt.xlabel("Year")
-        plt.ylabel("Approximate Percentage of Water Area")
+        plt.legend(loc="lower left", fontsize=20)
+        plt.xlabel("Year", fontsize=24)
+        plt.ylabel("Approximate Percentage of Water Area", fontsize=24)
+        # Set tick parameters
+        plt.tick_params(axis='both', which='major', labelsize=20)  # Tick labels font size
+
         #plt.show()
         fig.savefig(join(output,f"{path}_water_area.pdf"), bbox_inches='tight')
 

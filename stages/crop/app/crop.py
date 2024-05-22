@@ -45,7 +45,7 @@ def crop_bands(path, image_name, min_lat, min_lon, max_lat, max_lon, output=None
             })
 
             # Save the cropped image
-            with rasterio.open(f'{output}/{image_name}/croped_B{i+1}.TIF', 'w', **out_meta) as dest:
+            with rasterio.open(f'{output}/{image_name}/{image_name}_B{i+1}.TIF', 'w', **out_meta) as dest:
                 dest.write(out_image)
 
 
