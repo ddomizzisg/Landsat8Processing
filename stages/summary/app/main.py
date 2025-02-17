@@ -47,16 +47,17 @@ def get_summary(input_path, output):
                 meta = src.meta
             
             # show image
-            water_threshold = 0.5
+            water_threshold = 0.65
             image = normalize(image)
-            print("Uniques",np.unique(image))
+            #print("Uniques",np.unique(image))
             water_mask = image > water_threshold
-            print(water_mask)
+            #print(water_mask)
             n_rows, n_cols = water_mask.shape
             #print(year, np.sum(water_mask), n_rows * n_cols)
             # Calculate the pixel area (in square meters)
             pixel_area = src.res[0] * src.res[1]
-            print(pixel_area, src.res[0], src.res[1])
+            print(path_to_image, len(water_mask[water_mask == True]))
+            print(np.sum(water_mask), n_rows * n_cols)
             water_area = np.sum(water_mask) * 100 / (n_rows * n_cols) #* pixel_area #* 100 / (n_rows * n_cols)
             
             #convert to km^2
@@ -90,8 +91,6 @@ def get_summary(input_path, output):
         fig_size = [fig_width, fig_height]
             
         plt.clf()
-        
-        
 
         
         fig = plt.figure()

@@ -12,3 +12,5 @@ stages/download/venv
 res*
 deployer/27.0_water_area.pdf
 deployer/derivatives.tar.gz
+stages/summary/app/28.0_water_area.pdf
+stages/summary/app/27.0_water_area.pdf
