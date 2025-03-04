@@ -24,7 +24,6 @@ Available services are in the ```stages``` directory. The most relevant are the 
 graph TD;
     subgraph Endpoint_1
     uncompress-->atmospheric
-    
 ```
 
 ### Construcción de las imagenes de  contenedore
