@@ -29,9 +29,9 @@ flowchart TD
     subgraph Endpoint_2
     crop-->derivatives
     derivatives-->summary
-    summary-->A
     end
     subgraph Endpoint_3
+    summary-->A
     A@{ shape: lin-cyl, label: "Disk storage" }
     A-->Geoportal
     end
