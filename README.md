@@ -18,7 +18,7 @@ Available services are in the ```stages``` directory. The most relevant are the 
 * ```parser```: parses the metadata and get human-readeable information from the coordinates of the images.
 
 
-### Examples of flows
+### Example of a flow
 
 ```mermaid
 flowchart TD
@@ -32,7 +32,7 @@ flowchart TD
     end
     subgraph Endpoint_3
     summary-->A
-    A@{ shape: lin-cyl, label: "Disk storage" }
+    A@{ shape: lin-cyl, label: "Database" }
     A-->Geoportal
     end
     subgraph Endpoint_4
@@ -40,6 +40,31 @@ flowchart TD
     parser --> A
     end
 ```
+
+* Uncompress:
+    - **Execution command**: ```mkdir -p out_dir && tar -xf image.tar.gz -C out_dir```
+    - **Inputs**: An image in tar.gz format
+    - **Outputs**: The file uncompressed.
+* Atmospheric:
+    - **Execution command**: ```python /app/main.py /path/to/image image_name -o out_dir```
+    - **Inputs**: Bands of the image
+    - **Outputs**: Corrected bands
+* Crop:
+    - **Execution command**: ```python /app/crop.py /path/to/image image_name longitud1 latitud1 longitud2 latitud2 -o out_dir```
+    - **Inputs**: Bands of the image, coordinates
+    - **Outputs**: Cropped Bands
+* Derivatives:
+    - **Execution command**: ```python /app/main.py/path/to/image image_name -o @D```
+    - **Inputs**:  Bands of the image
+    - **Outputs**:  Corrected bands
+* Summary:
+    - **Execution command**: ```python /app/main.py @I -o @D```
+    - **Inputs**: Derivate products
+    - **Outputs**: Plots
+* Parser:
+    - **Execution command**: ```python /app/test.py METADATA IMAGE_NAME MONGO_DATABASE > OUT.json```
+    - **Inputs**:  Metadata of the image
+    - **Outputs**: A json file with the metadata, which already is indexed in a DB.
 
 ### Construcción de las imagenes de  contenedore
 
