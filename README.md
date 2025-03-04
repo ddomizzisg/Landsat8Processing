@@ -66,7 +66,7 @@ flowchart TD
     - **Inputs**:  Metadata of the image
     - **Outputs**: A json file with the metadata, which already is indexed in a DB.
 
-### Construcción de las imagenes de  contenedore
+### Construcción de las imagenes de  contenedores
 
 ```bash
 cd stages/correcciones
