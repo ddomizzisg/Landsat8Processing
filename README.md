@@ -29,6 +29,7 @@ flowchart TD
     subgraph Endpoint_2
     crop-->derivatives
     derivatives-->summary
+    summary-->A
     end
     subgraph Endpoint_3
     A@{ shape: lin-cyl, label: "Disk storage" }
