@@ -6,6 +6,28 @@ Etapas del flujo: descompresión, correcciones+productos derivados, parsing+inde
 
 Descargar imagenes satelitales ```Landsat8``` de https://earthexplorer.usgs.gov/
 
+### Services
+
+Available services are in the ```stages``` directory. The most relevant are the following:
+
+*  ```uncompres```: a simple container with TAR installed to uncompress the images.
+*  ```atmospheric```: contains an application to perform atmospheric corrections over scenes.
+* ```radiometric```: performs radiometric corrections over the scenes.
+* ```derivatives```: produces NDWI and NDVI indexes from the bands of a image.
+* ```crop```: crop the bands of a image to an specific region specified by min and max coordinates.
+* ```parser```: parses the metadata and get human-readeable information from the coordinates of the images.
+
+
+### Examples of flows
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
 ### Construcción de las imagenes de  contenedore
 
 ```bash

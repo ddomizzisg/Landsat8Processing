@@ -92,7 +92,7 @@ for i in range(len(input_data)):
     results.append(uncompress(inputs=[input_data[i]], outputs=[output_uncompress[i]]))
 
 for r in results:
-     r.result()
+    r.result()
 
 print("---Uncompress %s seconds ---" % (time.time() - uncompress_starttime))
 
