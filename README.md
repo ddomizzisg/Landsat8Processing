@@ -33,6 +33,7 @@ flowchart TD
     end
     subgraph Endpoint_3
     A@{ shape: lin-cyl, label: "Disk storage" }
+    A-->Geoportal
     end
 ```
 
