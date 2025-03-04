@@ -24,6 +24,7 @@ Available services are in the ```stages``` directory. The most relevant are the 
 flowchart TD
     subgraph Endpoint_1
     uncompress-->atmospheric
+    atmospheric-->crop
     end
     subgraph Endpoint_2
     crop-->derivatives
