@@ -22,10 +22,9 @@ Available services are in the ```stages``` directory. The most relevant are the 
 
 ```mermaid
 graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+    subgraph Endpoint_1
+    uncompress-->atmospheric
+    
 ```
 
 ### Construcción de las imagenes de  contenedore
