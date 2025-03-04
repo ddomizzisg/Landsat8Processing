@@ -36,6 +36,7 @@ flowchart TD
     A-->Geoportal
     end
     subgraph Endpoint_4
+    uncompress-->parser
     parser --> A
     end
 ```
