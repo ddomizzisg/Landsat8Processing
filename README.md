@@ -21,7 +21,7 @@ Available services are in the ```stages``` directory. The most relevant are the 
 ### Examples of flows
 
 ```mermaid
-graph TD;
+flowchart TD;
     subgraph Endpoint_1
     uncompress-->atmospheric
 ```
