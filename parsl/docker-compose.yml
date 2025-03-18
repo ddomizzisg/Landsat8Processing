@@ -1,4 +1,4 @@
-version: "3"
+#version: "3"
 services:
   parsltest:
     build:
@@ -7,7 +7,7 @@ services:
     command: "tail -f /dev/null"
     volumes:
       - "./apps:/apps"
-      - "/home/domizzi/Documents/bernoulli/data/:/DATA/"
+      - "./data/:/DATA/"
       - "./parsl:/parsltests"
   globusendpoint:
     build:
@@ -17,7 +17,7 @@ services:
     volumes:
     #  - "./configs/globus_compute:/root/.globus_compute/"
       - "./apps:/apps"
-      - "/home/domizzi/Documents/bernoulli/data/:/DATA/"
+      - "./data/:/DATA/"
       - "./parsl:/parsltests"
   globusendpoint_corrections:
     build:

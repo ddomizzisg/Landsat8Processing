@@ -16,3 +16,5 @@ stages/summary/app/28.0_water_area.pdf
 stages/summary/app/27.0_water_area.pdf
 parsl/configs/*
 parsl/redisdata
+parsl/LC08_L1TP_202034_20130505_20200912_02_T1/*
+parsl/summary/*

@@ -51,7 +51,7 @@ def make_corrections(folder, image_name, output="."):
         band_path = os.path.join(folder, image_name + "_B%d.TIF" % x)
         new_data = dn_to_radiance(band_path, x, metaDict)
         os.makedirs( os.path.join(output, image_name), exist_ok=True)
-        funcs.array_to_raster(band_path, new_data, os.path.join(output, image_name, image_name + "_B%d.TIF" % x))
+        funcs.array_to_raster(band_path, new_data, os.path.join(output, image_name, image_name + "_B%d_corr.TIF" % x))
         #paths.append(band_path)
 
     #masked_paths = apply_mask(paths, folder)

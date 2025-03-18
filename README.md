@@ -98,42 +98,23 @@ makeflow --jx --max-local=1 workflow.jx
  ┣ 📂mongodbdata
  ┣ 📂parsl
  ┃ ┣ 📂apps <- Application source code and requirements
+ ┃ ┃ ┣ 📂corrections
+ ┃ ┃ ┣ 📂crop
  ┃ ┃ ┣ 📂derivatives
  ┃ ┃ ┣ 📂parser
+ ┃ ┃ ┣ 📂summary
  ┃ ┃ ┗ 📜requirements.txt
  ┃ ┣ 📂indexing <- Results of the indexing stage
- ┃ ┣ 📂runinfo
- ┃ ┣ 📂uncompressed <- Results of the uncompressing and generation of derivative products stages
  ┃ ┣ 📜Parsl.Dockerfile
+ ┃ ┣ 📜Globus.Dockerfile
  ┃ ┗ 📜parslflow.py
+ ┃ ┗ 📜distributed_parsl.py
  ┗ 📜docker-compose.yml
 ```
 
-1. Dirigirse a la carpeta parsl y modificar la línea 9 del archivo ```docker-compose.yml``` con la ruta a los datos.
+1. Dirigirse a la carpeta parsl y modificar las lineas 10 y 20 del archivo ```docker-compose.yml``` .
 
-    ```YAML
-    version: "3"
-    services:
-    parsltest:
-        build:
-        context: ./parsl
-        dockerfile: Parsl.Dockerfile
-        command: "tail -f /dev/null"
-        volumes:
-        - "./apps:/apps"
-        - "/PATH/TO/DATA:/DATA/"
-        - "./parsl:/parsltests"
-    mongo:
-        image: mongo:4.2
-        restart: always
-        expose:
-        - "27017/tcp"
-        volumes:
-        - "./mongodbdata:/data/db"
-
-    ```
-
-2. Levantar los servicios con ```docker compose``` e ingresar al contenedor ```parsltest```.
+2. Levantar los servicios con ```docker compose```.
 
     ```bash
     docker compose build
@@ -141,23 +122,35 @@ makeflow --jx --max-local=1 workflow.jx
     docker compose exec parsltest bash
     ```
 
+
+2. Ingresar a los contenedores ```globusendpoint```, ```globusendpoint_corrections```, y ```globusendpoint_derivatives```.
+
+3. Ejecutar los siguientes comandos en cada contenedor:
+
+    ```bash
+    globus-compute-endpoint configure endpointname
+    globus-compute-endpoint start endpointname
+
+    ```
+
+    Reemplazar ```endpointname``` con el nombre del endpoint deseado. Seguir las instrucciones de autenticación. Guardar el token del endpoint. 
+
+4. Ingresar al contenedor ```parsltest```.
+
+    ```bash
+    docker compose exec parsltest bash
+    ```
+
+5. Modificar el archivo distributed_parsl.py, cambiando los valores de las variables ```endpoint_id``` con los obtenidos anteriormente.
+
+6. Modificar la línea 30 con las coordenadas deseadas.
+
 3. Ejecutar el flujo con:
 
     ```bash
     python parslflow.py
     ```
 
-    En pantalla se mostrarán los tiempos de ejecución de cada etapa.
-
-    ```console
-    root@b7911063bebb:/parsltests# python parslflow.py
-    ---Uncompress 6.361931562423706 seconds ---
-    ---Derivatives 19.980003833770752 seconds ---
-    ---Indexing 0.6989550590515137 seconds ---
-    root@b7911063bebb:/parsltests# 
-    ```
-
-    Las salidas las podrás ver en las carpetas ``ìndexing``` ```uncompressed```.
 
 ## Ejecución Nez
 

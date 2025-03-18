@@ -26,9 +26,9 @@ ee = EarthExplorer(username, password)
 # Search for Landsat TM scenes
 scenes = api.search(
     dataset='landsat_ot_c2_l1',
-    latitude=19.9391,
-    longitude=-101.1827,
-    start_date='2024-01-01',
+    latitude=40.33288,
+    longitude=-3.84938,
+    start_date='2010-01-01',
     end_date='2024-12-31',
     max_results=10,
     max_cloud_cover=10
@@ -37,16 +37,16 @@ scenes = api.search(
 print(f"{len(scenes)} scenes found.")
 
 sublist_size = len(scenes) // 3
-
+print(sublist_size)
 # Divide the list into three sublists
-sublist1 = scenes[:sublist_size]
-sublist2 = scenes[sublist_size: 2 * sublist_size]
-sublist3 = scenes[2 * sublist_size:]
+#sublist1 = scenes[:sublist_size]
+#sublist2 = scenes[sublist_size: 2 * sublist_size]
+#sublist3 = scenes[2 * sublist_size:]
 
-sublists = [sublist1, sublist2, sublist3]
+#sublists = [sublist1, sublist2, sublist3]
 
-with concurrent.futures.ThreadPoolExecutor() as executor:
-    results = list(executor.map(download, sublists))
+#with concurrent.futures.ThreadPoolExecutor() as executor:
+#    results = list(executor.map(download, sublists))
     #print(scene['acquisition_date'].strftime('%Y-%m-%d'))
     # Write scene footprints to disk
     #fname = f"{scene['landsat_product_id']}.geojson"

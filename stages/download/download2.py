@@ -1,15 +1,3 @@
-# =============================================================================
-#  USGS/EROS Inventory Service Example
-#  Python - JSON API
-# 
-#  Script Last Modified: 2/15/2023
-#  Note: This example does not include any error handling!
-#        Any request can throw an error, which can be found in the errorCode proprty of
-#        the response (errorCode, errorMessage, and data properies are included in all responses).
-#        These types of checks could be done by writing a wrapper similiar to the sendRequest function below
-#  Usage: python download_data.py -u username -p password
-# =============================================================================
-
 import json
 import requests
 import sys
@@ -19,7 +7,7 @@ import datetime
 import threading
 import re
 
-path = "./data" # Fill a valid path to save the downloaded files
+path = "" # Fill a valid path to save the downloaded files
 maxthreads = 5 # Threads count for downloads
 sema = threading.Semaphore(value=maxthreads)
 label = datetime.datetime.now().strftime("%Y%m%d_%H%M%S") # Customized label using date time
@@ -73,11 +61,12 @@ def downloadFile(url):
         response = requests.get(url, stream=True)
         disposition = response.headers['content-disposition']
         filename = re.findall("filename=(.+)", disposition)[0].strip("\"")
-        print(f"Downloading {filename} ...\n")
-        if path != "" and path[-1] != "/":
-            filename = "/" + filename
-        open(path + filename, 'wb').write(response.content)
-        print(f"Downloaded {filename}\n")
+        if filename.endswith(".tar.gz") or filename.endswith(".tar"):
+            print(f"Downloading {filename} ...\n")
+            if path != "" and path[-1] != "/":
+                filename = "/" + filename
+            open(path + filename, 'wb').write(response.content)
+            print(f"Downloaded {filename}\n")
         sema.release()
     except Exception as e:
         print(f"Failed to download from {url}. {e}. Will try to re-download.")
@@ -97,32 +86,31 @@ if __name__ == '__main__':
     
     # user input    
     parser = argparse.ArgumentParser()
-    parser.add_argument('-u', '--username', required=True, help='Username')
-    parser.add_argument('-p', '--password', required=True, help='Password')
+    parser.add_argument('-u', '--username', required=True, help='ERS Username')
+    parser.add_argument('-t', '--token', required=True, help='ERS application token')
     
     args = parser.parse_args()
     
     username = args.username
-    password = args.password     
+    token = args.token     
 
     print("\nRunning Scripts...\n")
     
     serviceUrl = "https://m2m.cr.usgs.gov/api/api/json/stable/"
     
-    # login
-    payload = {'username' : username, 'password' : password}
+    # login-token
+    payload = {'username' : username, 'token' : token}
     
-    apiKey = sendRequest(serviceUrl + "login", payload)
+    apiKey = sendRequest(serviceUrl + "login-token", payload)
     
     print("API Key: " + apiKey + "\n")
     
-    datasetName = "gls_all"
+    datasetName = "landsat_ot_c2_l1"
     
-    spatialFilter =  {'filterType' : "mbr",
-                      'lowerLeft' : {'latitude' : 30, 'longitude' : -120},
-                      'upperRight' : { 'latitude' : 40, 'longitude' : -140}}
+    spatialFilter =  {'filterType' : "mbr", 'lowerLeft' : {'latitude' : 39, 'longitude' : -5},
+                      'upperRight' : { 'latitude' : 41, 'longitude' : -2}}
                      
-    temporalFilter = {'start' : '2000-12-10', 'end' : '2005-12-10'}
+    temporalFilter = {'start' : '2010-01-01', 'end' : '2023-12-31'}
     
     payload = {'datasetName' : datasetName,
                                'spatialFilter' : spatialFilter,
@@ -146,8 +134,7 @@ if __name__ == '__main__':
         # I don't want to limit my results, but using the dataset-filters request, you can
         # find additional filters
         
-        acquisitionFilter = {"end": "2005-12-10",
-                             "start": "2000-12-10" }        
+        acquisitionFilter = {'start' : '2010-01-01', 'end' : '2023-12-31'}        
             
         payload = {'datasetName' : dataset['datasetAlias'], 
                                  'maxResults' : 2,
@@ -241,4 +228,4 @@ if __name__ == '__main__':
     if sendRequest(serviceUrl + endpoint, None, apiKey) == None:        
         print("Logged Out\n\n")
     else:
-        print("Logout Failed\n\n")
+        print("Logout Failed\n\n")       
