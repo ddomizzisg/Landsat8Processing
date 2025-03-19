@@ -16,8 +16,8 @@ def download(scenes):
                 print("Error")
 
 # Initialize the API with your EarthExplorer credentials
-username = 'domizzi'
-password = 'auja7f8yauja7f8y'
+username = ''
+password = ''
 
 api = API(username, password)
 ee = EarthExplorer(username, password)
