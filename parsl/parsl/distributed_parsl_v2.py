@@ -82,7 +82,7 @@ def download_from_ftp(inputs=[], outputs=[]):
 
     ftp = FTP(ftp_host)
     ftp.login(user=ftp_user, passwd=ftp_pass)
-
+    
     for file in inputs:
         dir_name = os.path.dirname(file)
         os.makedirs(dir_name, exist_ok=True)
@@ -181,7 +181,7 @@ config = Config(
         GlobusComputeExecutor(
             label="uncompress",
             executor=Executor(
-                endpoint_id="760a4f08-8a07-479a-ac16-3ef7ddf34b3e")
+                endpoint_id="760a4f08-8a07-479a-ac16-3ef7ddf34b3e"),
         ),
         GlobusComputeExecutor(
             label="corrections",
@@ -201,8 +201,9 @@ datadir = "/DATA/"
 
 input_data = []
 output_uncompress = []
-outputs_corrections = {}
+outputs_corrections = []
 outputs_cropping = {}
+inputs_ftps_1 = {}
 outputs_derivatives = {}
 inputs_summary = []
 names = []
@@ -214,16 +215,20 @@ for filename in glob.iglob(datadir + '**/*.tar', recursive=True):
     # output_simulation.append(File("simulation/" + basename + ".csv"))
     output_uncompress.append(File("uncompressed/" + basename))
 
-    outputs_corrections[basename] = []
-    outputs_cropping[basename] = []
+    # outputs_corrections[basename] = []
+    inputs_ftps_1[basename] = []
     outputs_derivatives[basename] = []
-    for i in range(1, 10):
-        outputs_corrections[basename].append(
-            File(f"uncompressed/{basename}/{basename}_B{i}.TIF"))
-        outputs_corrections[basename].append(
-            File(f"uncompressed/{basename}/{basename}_B{i}_corr.TIF"))
 
-        outputs_cropping[basename].append(
+    outputs_corrections.append(File("uncompressed/" + basename))
+    outputs_cropping["uncompressed/" + basename] = File("cropped/" + basename)
+
+    for i in range(1, 10):
+        # outputs_corrections[basename].append(
+        #    File(f"uncompressed/{basename}/{basename}_B{i}.TIF"))
+        # outputs_corrections[basename].append(
+        #    File(f"uncompressed/{basename}/{basename}_B{i}_corr.TIF"))
+
+        inputs_ftps_1[basename].append(
             File(f"cropped/{basename}/{basename}_B{i}.TIF"))
     for i in ["ndvi_", "ndwi_b4", "ndwi_green_b7", "ndwi_red_b6", "ndwi_red_b7", "rgb_", "rgb_high_contrast_"]:
         outputs_derivatives[basename].append(
@@ -233,7 +238,7 @@ for filename in glob.iglob(datadir + '**/*.tar', recursive=True):
     outputs_derivatives[basename].append(
         File(f"cropped/{basename}/ndwi_red_b7{basename}.tif"))
 
-    # outputs_derivatives[basename].append()
+    # outputs_derivatives[basename].append()"""
 
     names.append(basename)
 
@@ -248,72 +253,81 @@ results = []
 # a = save_output("Hello World", output_file)
 # print(a.result())
 
-print(input_data)
-print(output_uncompress)
-for i in range(len(input_data)):
-    results.append(uncompress(
-        inputs=[input_data[i]], outputs=[output_uncompress[i]]))
+# Store all futures
+uncompress_futures = {}
+corrections_futures = {}
+crop_futures = {}
+upload_futures = {}
+derivatives_futures = {}
+push_derivatives_futures = {}
+download_derivatives_futures = {}
 
-for r in results:
-    out = r.result()
-    if out == 0:
-        outputs = r.outputs
-        res_corrections = corrections(inputs=[outputs[0].filename, os.path.basename(
-            outputs[0].filename)], outputs=outputs_corrections[os.path.basename(outputs[0].filename)])
+# Step 1: Uncompress (parallel)
+for i, file_obj in enumerate(input_data):  # Use integer index
+    file_key = os.path.basename(file_obj.filename)  # Use filename as a key
+    output_file = output_uncompress[i]  # Use list index for outputs
+    print(file_obj)
+    uncompress_futures[file_key] = uncompress(
+        inputs=[file_obj], outputs=[output_file])
 
-        if res_corrections.result() == 0:
-            real_outputs_corrections = res_corrections.outputs
+# Step 2: Corrections (parallel)
+for file_key, fut in uncompress_futures.items():
+    fut.result()  # Wait for completion (only ensures success)
+    print(f"Uncompress {file_key} completed")
+    out_files = fut.outputs  # Get actual output files
+    print(out_files)
+    corrections_futures[file_key] = corrections(
+        inputs=[out_files[0].filename,
+                os.path.basename(out_files[0].filename)],
+        outputs=[File(out_files[0].filename)]
+    )
 
-            print(f"python3 /parsltests/apps/crop/crop.py {outputs[0].filename} {os.path.basename(
-                outputs[0].filename)} -101.315881 19.870015 -100.827868 20.084173 -o cropped")
+# Step 3: Cropping (parallel)
+for file_key, fut in corrections_futures.items():
+    fut.result()
+    out_files = fut.outputs
+    image = os.path.basename(os.path.dirname(out_files[0].filename))
+    crop_futures[file_key] = crop(
+        inputs=[out_files[0].filename,
+                os.path.basename(out_files[0].filename)],
+        outputs=[outputs_cropping[out_files[0].filename]]
+    )
 
-            res_crop = crop(inputs=[outputs[0].filename, os.path.basename(
-                outputs[0].filename)], outputs=outputs_cropping[os.path.basename(outputs[0].filename)])
+# Step 4: Upload to FTP (parallel)
+for file_key, fut in crop_futures.items():
+    fut.result()
+    out_files = fut.outputs
+    upload_futures[file_key] = upload_to_ftp(inputs=inputs_ftps_1[os.path.basename(out_files[0].filename)], outputs=[])
 
-            if res_crop.result() == 0:
-                real_outputs_crop = res_crop.outputs
-                print(real_outputs_crop)
-                res_ftp = upload_to_ftp(
-                    inputs=real_outputs_crop, outputs=[])
-                uploaded_files = res_ftp.result()
-                downloaded_files = download_from_ftp(
-                    inputs=uploaded_files, outputs=[]).result()
+# # Step 5: Download from FTP & Compute Derivatives (parallel)
+for file_key, fut in upload_futures.items():
+    uploaded_files = fut.result()  # Use .outputs instead of .result()
+    download_derivatives_futures[file_key] = download_from_ftp(inputs=uploaded_files, outputs=[])
+    
+for file_key, fut in download_derivatives_futures.items():
+    out_files = fut.result() 
+        
+    derivatives_futures[file_key] = derivatives(
+        inputs=[out_files[0], out_files[0]],
+        outputs=outputs_derivatives[out_files[0]]
+    )
 
-                print(
-                    f"python3 /parsltests/apps/derivatives/main.py {downloaded_files[0]} {downloaded_files[0]} -o cropped")
+# # Step 6: Push derivatives to FTP (parallel)
+for file_key, fut in derivatives_futures.items():
+    fut.result()
+    out_files = fut.outputs
+    push_derivatives_futures[file_key] = push_derivatives_to_ftp(inputs=out_files, outputs=[])
 
-                print(
-                    outputs_derivatives[os.path.basename(outputs[0].filename)])
+# # Step 7: Download derivatives from FTP (parallel)
+for file_key, fut in push_derivatives_futures.items():
+    out_files = fut.result()
+    download_derivatives_futures[file_key] = download_from_ftp_analysis(inputs=out_files, outputs=[])
 
-                derivatives_fut = derivatives(
-                    inputs=[downloaded_files[0], downloaded_files[0]], outputs=outputs_derivatives[os.path.basename(outputs[0].filename)])
-                derivatives_res = derivatives_fut.result()
-                # print(derivatives_res)
-                if derivatives_res == 0:
-                    print(derivatives_fut.outputs)
-                    push_der_fut = push_derivatives_to_ftp(
-                        inputs=derivatives_fut.outputs, outputs=[])
-                    push_der_result = push_der_fut.result()
-                    print(push_der_result)
-                    downloded_derivatives = download_from_ftp_analysis(
-                        inputs=push_der_result, outputs=[])
+# # Step 8: Collect Results
+for file_key, fut in download_derivatives_futures.items():
+    out_files = fut.result()
+    inputs_summary = inputs_summary + out_files
 
-                    res_down_der = downloded_derivatives.result()
-
-                    print(res_down_der)
-
-                    inputs_summary = inputs_summary + res_down_der
-
-
-#print(inputs_summary)
-#res_fut = summary(inputs=[".", inputs_summary])
-#print(res_fut.result())
-
-# res_sum = summary(inputs=)
-
-# for i in range(len(output_uncompress)):
-#    print(output_uncompress[i])
-
-# print("---Uncompress %s seconds ---" % (time.time() - uncompress_starttime))
-
-# derivatives_starttime = time.time()
+# # Step 9: Summary
+res_fut = summary(inputs=[".", inputs_summary])
+print(res_fut.result())

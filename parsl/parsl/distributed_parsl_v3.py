@@ -82,7 +82,7 @@ def download_from_ftp(inputs=[], outputs=[]):
 
     ftp = FTP(ftp_host)
     ftp.login(user=ftp_user, passwd=ftp_pass)
-
+    
     for file in inputs:
         dir_name = os.path.dirname(file)
         os.makedirs(dir_name, exist_ok=True)
@@ -175,13 +175,14 @@ def summary(inputs=[], outputs=[]):
         python3 /parsltests/apps/summary/main.py {inputs[0]} -o summary
         """
 
+BATCH_SIZE = 10  # Adjust batch size based on your API limit
 
 config = Config(
     executors=[
         GlobusComputeExecutor(
             label="uncompress",
             executor=Executor(
-                endpoint_id="760a4f08-8a07-479a-ac16-3ef7ddf34b3e")
+                endpoint_id="760a4f08-8a07-479a-ac16-3ef7ddf34b3e"),
         ),
         GlobusComputeExecutor(
             label="corrections",
@@ -201,8 +202,9 @@ datadir = "/DATA/"
 
 input_data = []
 output_uncompress = []
-outputs_corrections = {}
+outputs_corrections = []
 outputs_cropping = {}
+inputs_ftps_1 = {}
 outputs_derivatives = {}
 inputs_summary = []
 names = []
@@ -214,16 +216,20 @@ for filename in glob.iglob(datadir + '**/*.tar', recursive=True):
     # output_simulation.append(File("simulation/" + basename + ".csv"))
     output_uncompress.append(File("uncompressed/" + basename))
 
-    outputs_corrections[basename] = []
-    outputs_cropping[basename] = []
+    # outputs_corrections[basename] = []
+    inputs_ftps_1[basename] = []
     outputs_derivatives[basename] = []
-    for i in range(1, 10):
-        outputs_corrections[basename].append(
-            File(f"uncompressed/{basename}/{basename}_B{i}.TIF"))
-        outputs_corrections[basename].append(
-            File(f"uncompressed/{basename}/{basename}_B{i}_corr.TIF"))
 
-        outputs_cropping[basename].append(
+    outputs_corrections.append(File("uncompressed/" + basename))
+    outputs_cropping["uncompressed/" + basename] = File("cropped/" + basename)
+
+    for i in range(1, 10):
+        # outputs_corrections[basename].append(
+        #    File(f"uncompressed/{basename}/{basename}_B{i}.TIF"))
+        # outputs_corrections[basename].append(
+        #    File(f"uncompressed/{basename}/{basename}_B{i}_corr.TIF"))
+
+        inputs_ftps_1[basename].append(
             File(f"cropped/{basename}/{basename}_B{i}.TIF"))
     for i in ["ndvi_", "ndwi_b4", "ndwi_green_b7", "ndwi_red_b6", "ndwi_red_b7", "rgb_", "rgb_high_contrast_"]:
         outputs_derivatives[basename].append(
@@ -233,7 +239,7 @@ for filename in glob.iglob(datadir + '**/*.tar', recursive=True):
     outputs_derivatives[basename].append(
         File(f"cropped/{basename}/ndwi_red_b7{basename}.tif"))
 
-    # outputs_derivatives[basename].append()
+    # outputs_derivatives[basename].append()"""
 
     names.append(basename)
 
@@ -248,72 +254,83 @@ results = []
 # a = save_output("Hello World", output_file)
 # print(a.result())
 
-print(input_data)
-print(output_uncompress)
-for i in range(len(input_data)):
-    results.append(uncompress(
-        inputs=[input_data[i]], outputs=[output_uncompress[i]]))
+# Store all futures
+uncompress_futures = {}
+corrections_futures = {}
+crop_futures = {}
+upload_futures = {}
+derivatives_futures = {}
+push_derivatives_futures = {}
+download_derivatives_futures = {}
 
-for r in results:
-    out = r.result()
-    if out == 0:
-        outputs = r.outputs
-        res_corrections = corrections(inputs=[outputs[0].filename, os.path.basename(
-            outputs[0].filename)], outputs=outputs_corrections[os.path.basename(outputs[0].filename)])
+# Step 1: Uncompress (parallel)}
+tasks_uncompress = [uncompress(inputs=[file_obj], outputs=[output_file]) for file_obj, output_file in zip(input_data, output_uncompress)]
 
-        if res_corrections.result() == 0:
-            real_outputs_corrections = res_corrections.outputs
+# Wait for all tasks to complete
+results_uncompress = [task.result() for task in tasks_uncompress]
 
-            print(f"python3 /parsltests/apps/crop/crop.py {outputs[0].filename} {os.path.basename(
-                outputs[0].filename)} -101.315881 19.870015 -100.827868 20.084173 -o cropped")
+print("Uncompress termino")
 
-            res_crop = crop(inputs=[outputs[0].filename, os.path.basename(
-                outputs[0].filename)], outputs=outputs_cropping[os.path.basename(outputs[0].filename)])
+# Step 2: Corrections (parallel)
+tasks_corrections = [corrections(inputs=[input_file.outputs[0].filename, os.path.basename(input_file.outputs[0].filename)], outputs=[File(input_file.outputs[0].filename)]) for input_file in tasks_uncompress]
 
-            if res_crop.result() == 0:
-                real_outputs_crop = res_crop.outputs
-                print(real_outputs_crop)
-                res_ftp = upload_to_ftp(
-                    inputs=real_outputs_crop, outputs=[])
-                uploaded_files = res_ftp.result()
-                downloaded_files = download_from_ftp(
-                    inputs=uploaded_files, outputs=[]).result()
+# wait for all tasks to complete
+results_corrections = [task.result() for task in tasks_corrections]
 
-                print(
-                    f"python3 /parsltests/apps/derivatives/main.py {downloaded_files[0]} {downloaded_files[0]} -o cropped")
+print("Corrections termino")
 
-                print(
-                    outputs_derivatives[os.path.basename(outputs[0].filename)])
+# Step 3: Cropping (parallel)
+tasks_cropping = [crop(inputs=[task.outputs[0].filename, os.path.basename(task.outputs[0].filename)], outputs=[outputs_cropping[task.outputs[0].filename]]) for task in tasks_corrections] 
 
-                derivatives_fut = derivatives(
-                    inputs=[downloaded_files[0], downloaded_files[0]], outputs=outputs_derivatives[os.path.basename(outputs[0].filename)])
-                derivatives_res = derivatives_fut.result()
-                # print(derivatives_res)
-                if derivatives_res == 0:
-                    print(derivatives_fut.outputs)
-                    push_der_fut = push_derivatives_to_ftp(
-                        inputs=derivatives_fut.outputs, outputs=[])
-                    push_der_result = push_der_fut.result()
-                    print(push_der_result)
-                    downloded_derivatives = download_from_ftp_analysis(
-                        inputs=push_der_result, outputs=[])
+# wait for all tasks to complete
+results_cropping = [task.result() for task in tasks_cropping]
 
-                    res_down_der = downloded_derivatives.result()
+print("Cropping termino")
 
-                    print(res_down_der)
+# Step 4: Upload to FTP (parallel)
+tasks_upload = [upload_to_ftp(inputs=inputs_ftps_1[os.path.basename(task.outputs[0].filename)], outputs=[]) for task in tasks_cropping]
 
-                    inputs_summary = inputs_summary + res_down_der
+# wait for all tasks to complete
+results_upload = [task.result() for task in tasks_upload]
 
+print("Upload termino")
 
-#print(inputs_summary)
-#res_fut = summary(inputs=[".", inputs_summary])
-#print(res_fut.result())
+# Step 5: Download from FTP & Compute Derivatives (parallel)
+tasks_download = [download_from_ftp(inputs=uploaded_files, outputs=[]) for uploaded_files in results_upload]
 
-# res_sum = summary(inputs=)
+# wait for all tasks to complete
+results_download = [task.result() for task in tasks_download]
 
-# for i in range(len(output_uncompress)):
-#    print(output_uncompress[i])
+print("Download termino")
 
-# print("---Uncompress %s seconds ---" % (time.time() - uncompress_starttime))
+# Step 6: Compute Derivatives (parallel)
+tasks_derivatives = [derivatives(inputs=[out_files[0], out_files[0]], outputs=outputs_derivatives[out_files[0]]) for out_files in results_download]
 
-# derivatives_starttime = time.time()
+# wait for all tasks to complete
+results_derivatives = [task.result() for task in tasks_derivatives]
+
+print("Derivatives termino")
+
+# Step 7: Push derivatives to FTP (parallel)
+tasks_push_derivatives = [push_derivatives_to_ftp(inputs=out_files.outputs, outputs=[]) for out_files in tasks_derivatives]
+
+# wait for all tasks to complete
+results_push_derivatives = [task.result() for task in tasks_push_derivatives]
+
+print("Push derivatives termino")
+
+# Step 8: Download derivatives from FTP (parallel)
+tasks_download_derivatives = [download_from_ftp_analysis(inputs=push_der_result, outputs=[]) for push_der_result in results_push_derivatives]
+
+# wait for all tasks to complete
+results_download_derivatives = [task.result() for task in tasks_download_derivatives]
+
+print("Download derivatives termino")
+
+for fut in download_derivatives_futures.items():
+    out_files = fut.result()
+    inputs_summary = inputs_summary + out_files
+
+#  Step 9: Summary
+res_fut = summary(inputs=[".", inputs_summary])
+print(res_fut.result())

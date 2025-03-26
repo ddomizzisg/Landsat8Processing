@@ -4,6 +4,7 @@ import geopandas as gpd
 from shapely.geometry import box
 import argparse
 import os
+import shutil
 
 def crop_bands(path, image_name, min_lat, min_lon, max_lat, max_lon, output=None):
     os.makedirs(os.path.join(output, image_name), exist_ok=True)
@@ -28,25 +29,29 @@ def crop_bands(path, image_name, min_lat, min_lon, max_lat, max_lon, output=None
 
     # Open the Landsat 8 image
     for i,b in enumerate(bands):
-        with rasterio.open(b) as src:
-            # Reproject the bounding box to the image's CRS
-            geo = geo.to_crs(src.crs)
+        try:
+            with rasterio.open(b) as src:
+                # Reproject the bounding box to the image's CRS
+                geo = geo.to_crs(src.crs)
 
-            # Crop the image using the bounding box
-            out_image, out_transform = mask(src, geo.geometry, crop=True)
-            out_meta = src.meta.copy()
+                # Crop the image using the bounding box
+                out_image, out_transform = mask(src, geo.geometry, crop=True)
+                out_meta = src.meta.copy()
 
-            # Update the metadata with new dimensions and transform
-            out_meta.update({
-                "driver": "GTiff",
-                "height": out_image.shape[1],
-                "width": out_image.shape[2],
-                "transform": out_transform
-            })
+                # Update the metadata with new dimensions and transform
+                out_meta.update({
+                    "driver": "GTiff",
+                    "height": out_image.shape[1],
+                    "width": out_image.shape[2],
+                    "transform": out_transform
+                })
 
-            # Save the cropped image
-            with rasterio.open(f'{output}/{image_name}/{image_name}_B{i+1}.TIF', 'w', **out_meta) as dest:
-                dest.write(out_image)
+                # Save the cropped image
+                with rasterio.open(f'{output}/{image_name}/{image_name}_B{i+1}.TIF', 'w', **out_meta) as dest:
+                    dest.write(out_image)
+        except Exception as e:
+            # just copy the bands
+            shutil.copy(b, f'{output}/{image_name}/{image_name}_B{i+1}.TIF')
 
 
 parser = argparse.ArgumentParser(
@@ -62,4 +67,6 @@ parser.add_argument('max_lat', type=float)
 parser.add_argument('-o', '--output') 
 
 args = parser.parse_args()
+
+
 crop_bands(args.path, args.imagename, args.min_lat, args.min_lon, args.max_lat, args.max_lon, output=args.output) 
