@@ -182,17 +182,17 @@ config = Config(
         GlobusComputeExecutor(
             label="uncompress",
             executor=Executor(
-                endpoint_id="760a4f08-8a07-479a-ac16-3ef7ddf34b3e"),
+                endpoint_id="b4ac2889-d461-4c57-8a60-dd471fe8bfde"),
         ),
         GlobusComputeExecutor(
             label="corrections",
             executor=Executor(
-                endpoint_id="c3f8d398-bbb8-4317-b168-7c7bb0089979")
+                endpoint_id="5969a8b7-7128-4e74-a45c-9291ecd8c403")
         ),
         GlobusComputeExecutor(
             label="analysis",
             executor=Executor(
-                endpoint_id="5873e13d-be88-4750-b4e3-243aa795ee0e")
+                endpoint_id="67d547b3-1beb-42ee-8c31-3a5fc044aa7f")
         )
     ]
 )

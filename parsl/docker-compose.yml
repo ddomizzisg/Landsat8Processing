@@ -9,6 +9,9 @@ services:
       - "./apps:/apps"
       - "./data/:/DATA/"
       - "./parsl:/parsltests"
+    environment:
+      - GLOBUS_COMPUTE_CLIENT_ID=b3dbb567-540d-4bd4-ba47-ca5c460f6071
+      - GLOBUS_COMPUTE_CLIENT_SECRET=ak9anAZDeHFE6xcYNplbJoXfqIzs/9wgIVE0V/+z9DU=
   globusendpoint:
     build:
       context: ./parsl
@@ -19,6 +22,9 @@ services:
       - "./apps:/apps"
       - "./data/:/DATA/"
       - "./parsl:/parsltests"
+    environment:
+      - GLOBUS_COMPUTE_CLIENT_ID=b3dbb567-540d-4bd4-ba47-ca5c460f6071
+      - GLOBUS_COMPUTE_CLIENT_SECRET=ak9anAZDeHFE6xcYNplbJoXfqIzs/9wgIVE0V/+z9DU=
   globusendpoint_corrections:
     build:
       context: ./parsl
@@ -28,6 +34,9 @@ services:
     #  - "./configs/globus_compute:/root/.globus_compute/"
       - "./apps:/apps"
       - "./parsl:/parsltests"
+    environment:
+      - GLOBUS_COMPUTE_CLIENT_ID=b3dbb567-540d-4bd4-ba47-ca5c460f6071
+      - GLOBUS_COMPUTE_CLIENT_SECRET=ak9anAZDeHFE6xcYNplbJoXfqIzs/9wgIVE0V/+z9DU=
   globusendpoint_derivatives:
     build:
       context: ./parsl
@@ -37,6 +46,9 @@ services:
     #  - "./configs/globus_compute:/root/.globus_compute/"
       - "./apps:/apps"
       - "./parsl:/parsltests"
+    environment:
+      - GLOBUS_COMPUTE_CLIENT_ID=b3dbb567-540d-4bd4-ba47-ca5c460f6071
+      - GLOBUS_COMPUTE_CLIENT_SECRET=ak9anAZDeHFE6xcYNplbJoXfqIzs/9wgIVE0V/+z9DU=
   mongo:
     image: mongo:4.2
     restart: always
