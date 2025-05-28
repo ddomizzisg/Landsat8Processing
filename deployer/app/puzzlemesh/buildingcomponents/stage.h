@@ -32,14 +32,18 @@ private:
     tsl::ordered_map<string, BuildingBlock *> bbs;
     vector<string> bbsStr;
     Catalog *catalog;
+    string endpoint;
+    bool remote;
 public:
     Stage():BuildingBlock(STAGE){};
     Stage(string name):BuildingBlock(name, STAGE){}
 
-    Stage(string name, vector<string> sourcesStr, vector<string> sinksStr, vector<string> bbsStr)
+    Stage(string name, vector<string> sourcesStr, vector<string> sinksStr, vector<string> bbsStr, string endpoint)
     :BuildingBlock(name, STAGE, sourcesStr, sinksStr)
     {
       this->bbsStr = bbsStr;
+      this->endpoint = endpoint;
+      this->remote = !endpoint.empty();
     }
 
     Stage(string name, vector<Stage*> previous, vector<Stage*> next,
@@ -53,6 +57,7 @@ public:
         this->bbsStr = bbsStr;
     }
 
+    bool isRemote();
     void setPrevious(vector<Stage *> previous);
     void setNext(vector<Stage *> next);
     void setBBs(tsl::ordered_map<string, BuildingBlock *> bb);

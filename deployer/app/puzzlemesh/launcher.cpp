@@ -7,7 +7,7 @@ void Launcher::execute(string mode)
 	this->coupling();
 	this->buildYML(mode);
 
-	compose_command = "docker-compose --log-level ERROR -p " + this->workpath_container + "/results/" + this->workflow->getWorkdir() +
+	/*compose_command = "docker-compose --log-level ERROR -p " + this->workpath_container + "/results/" + this->workflow->getWorkdir() +
 					  " -f " + this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml ";
 
 	//Deploy YML
@@ -15,7 +15,7 @@ void Launcher::execute(string mode)
 
 	//system(up_command.c_str());
 	this->workflow->downloadInputData(this->workpath_container + "/results");
-	this->workflow->execute(this->workpath + "/results", compose_command);
+	this->workflow->execute(this->workpath + "/results", compose_command);*/
 }
 
 
@@ -47,7 +47,7 @@ void Launcher::start(string mode)
 	this->coupling();
 	this->buildYML(mode);
 
-	if (boost::iequals(mode, "swarm"))
+	/*if (boost::iequals(mode, "swarm"))
 	{
 		up_command = "docker stack deploy --compose-file " + this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml " + this->workflow->getWorkdir();
 		;
@@ -57,11 +57,6 @@ void Launcher::start(string mode)
 		compose_command = "docker-compose --log-level ERROR -p " + this->workpath_container + "/results/" + this->workflow->getWorkdir() +
 						  " -f " + this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml ";
 		up_command = compose_command + " up -d --build";
-		// //search fo replicas
-		/*for (auto x : patterns)
-		{
-			up_command += " --scale " + x.second->getWorker()->getName() + "=" + ::to_string(x.second->getNWorkers()) + " ";
-		}*/
 
 		up_command += " 2> /dev/null";
 	}
@@ -82,7 +77,7 @@ void Launcher::start(string mode)
 	}
 
 	Logger("LAUCHER: to shutdown the containers execute  \n\n" + down_command + "\n\n", true);
-	//printJSON(compose_command);
+	//printJSON(compose_command);*/
 }
 
 void Launcher::printMonitoringFile(vector<string> containers)
@@ -391,6 +386,14 @@ void Launcher::buildYML(string mode)
 
 	Logger("LAUNCHER: Creating YML file at " + this->workflow->getWorkdir() + "/docker-compose.yml", true);
 
+	for(auto stg:stages)
+	{
+		if(stg.second->isRemote()){
+			cout << "Remote stage " << stg.second->getName() << endl;
+			yml.open(this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose-" + stg.second->getName() + ".yml");
+		}
+	}
+
 	/*if (boost::iequals(mode, "swarm"))
 	{
 		yml_base = {"version: \'3\'\nservices:\n"};
@@ -400,7 +403,7 @@ void Launcher::buildYML(string mode)
 		yml_base = {"version: \'2.4\'\nservices:\n"};
 	}*/
 
-	yml.open(this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml");
+	/*yml.open(this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml");
 
 	ifstream test;
 
@@ -515,7 +518,7 @@ void Launcher::buildYML(string mode)
 	}
 	
 	yml << yml_base << endl;
-	yml.close();
+	yml.close();*/
 }
 
 bool Launcher::downloadData(string apikey, string token, string access)

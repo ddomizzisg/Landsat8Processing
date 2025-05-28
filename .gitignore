@@ -18,3 +18,7 @@ parsl/configs/*
 parsl/redisdata
 parsl/LC08_L1TP_202034_20130505_20200912_02_T1/*
 parsl/summary/*
+*.o.d
+deployer/app/puzzlemesh/CMakeFiles
+deployer/app/puzzlemesh/logs/
+parsl/parsl/globus_compute_diagnostic_2025-03-26-12-10-40Z.txt.gz

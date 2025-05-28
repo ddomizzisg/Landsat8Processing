@@ -1,5 +1,9 @@
 #include "stage.h"
 
+bool Stage::isRemote()
+{
+    return this->remote;
+}
 
 void Stage::setPrevious(vector<Stage *> previous)
 {

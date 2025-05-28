@@ -155,7 +155,7 @@ unordered_map<string, Stage *> ConfigParser::searchStages(vector<string> lines,
 {
     bool found;
     unordered_map<string, Stage *> stages;
-    string name, basepath;
+    string name, basepath, endpoint;
     vector<string> inputs, outputs, transformationNames;
     
     basepath = this->workpath;
@@ -170,7 +170,7 @@ unordered_map<string, Stage *> ConfigParser::searchStages(vector<string> lines,
             {
                 found = !found;
                 //cout << name << command << input << outputs << endl;
-                stages[name] = new Stage(name, inputs, outputs, transformationNames);
+                stages[name] = new Stage(name, inputs, outputs, transformationNames, endpoint);
                 this->bbs[name] = stages[name];
                 Logger("PARSER: Configured stage " + name, true);
             }
@@ -198,6 +198,10 @@ unordered_map<string, Stage *> ConfigParser::searchStages(vector<string> lines,
                     else if (v[0].compare("transformation") == 0)
                     {
                         transformationNames = explode(trim(v[1]), ' ');
+                    }
+                    else if (v[0].compare("endpoint") == 0)
+                    {
+                        endpoint = trim(v[1]);
                     }
                 }
                 else

@@ -1,528 +1,249 @@
 import numpy as np
 import rasterio
 import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
 import os
-import argparse
-import earthpy.plot as ep
-import earthpy.spatial as es
 from PIL import Image
 import tifffile as tiff
-
-
+import earthpy.spatial as es
+import argparse
+import os
 from matplotlib.colors import ListedColormap
+from matplotlib.colors import LinearSegmentedColormap, Normalize
+from matplotlib.cm import ScalarMappable
 
 
+# === Generic helpers ===
+
+def load_band(path, dtype='float32', replace_zeros=True):
+    with rasterio.open(path) as band:
+        arr = band.read(1).astype(dtype)
+        meta = band.meta
+    if replace_zeros:
+        arr[arr == 0] = np.nan
+    return arr, meta
+
+def save_geotiff(path, array, meta):
+    with rasterio.open(path, 'w', **meta) as dst:
+        dst.write_band(1, array)
+
+def normalize_array(arr, a=0, b=255):
+    return a + ((arr - np.nanmin(arr)) * (b - a)) / (np.nanmax(arr) - np.nanmin(arr))
+
+def normalize(array):
+    return (array - np.nanmin(array)) / (np.nanmax(array) - np.nanmin(array))
+
+def create_index(band_a, band_b, formula="nd", L=1.0):
+    if formula == "nd":  # Normalized Difference
+        return es.normalized_diff(band_a, band_b)
+    elif formula == "evi":
+        return (band_a - band_b) / (band_a + 6 * band_b - 7.5 * band_b + L)
+    elif formula == "savi":
+        return ((band_a - band_b) / (band_a + band_b + L)) * (1 + L)
+    else:
+        raise ValueError(f"Unknown formula {formula}")
+
+def plot_index(index, output, meta, colormap, bins, class_names=None, overlay=None):
+    index[np.isnan(index)] = -1
+    classified = np.digitize(index, bins)
+    masked = np.ma.masked_where(np.ma.getmask(index), classified)
+    px = 1 / plt.rcParams['figure.dpi']
+    fig, ax = plt.subplots(figsize=(meta["width"] * px, meta["height"] * px))
+    ax.imshow(masked, cmap=ListedColormap(colormap))
+    ax.set_axis_off()
+    plt.tight_layout()
+    plt.savefig(output)
+    plt.close()
+    return masked
+
+
+# === Vegetation/Water Indices ===
+
+def compute_index_and_save(band_paths, output, formula, bins, colormap, tif=True, L=1.0):
+    bands = [load_band(p)[0] for p in band_paths]
+    meta = load_band(band_paths[0])[1]
+
+    index = create_index(*bands, formula=formula, L=L)
+    norm_index = normalize_array(index)
+
+    if tif:
+        save_geotiff(output.replace(".png", ".tif"), norm_index, meta)
+
+    masked = plot_index(index, output, meta, colormap, bins)
+    
+
+    return norm_index, masked
+
+
+# === Specific Index Wrappers ===
 
 def ndvi(nir_path, red_path, output):
-    
-    with rasterio.open(red_path) as red_band:
-        meta = red_band.meta
-        red = red_band.read(1).astype('float64')
-        #ed[red == 0] = np.nan
-        
-    with rasterio.open(nir_path) as nir_band:
-        nir = nir_band.read(1).astype('float64')
-        #nir[nir == 0] = np.nan
-    
-    ndvi = es.normalized_diff(nir, red)
-    
-    # Save the NDVI image as TIFF
-    with rasterio.open(output.replace(".png", ".tif"), 'w', **meta) as out:
-        out.write_band(1, ndvi * 255)    
-    
-    titles = ["Landsat 8 - Normalized Difference Vegetation Index (NDVI)"]
-    
-    # Create classes and apply to NDVI results
-    ndvi_class_bins = [-np.inf, 0, 0.1, 0.25, 0.4, np.inf]
-    ndvi_landsat_class = np.digitize(ndvi, ndvi_class_bins)
-
-    # Apply the nodata mask to the newly classified NDVI data
-    ndvi_landsat_class = np.ma.masked_where(
-        np.ma.getmask(ndvi), ndvi_landsat_class
+    return compute_index_and_save(
+        [nir_path, red_path],
+        output,
+        formula="nd",
+        bins=[-np.inf, 0, 0.1, 0.25, 0.4, np.inf],
+        colormap=["gray", "y", "yellowgreen", "g", "darkgreen"]
     )
-    np.unique(ndvi_landsat_class)
-    
 
-    
-    # Define color map
-    nbr_colors = ["gray", "y", "yellowgreen", "g", "darkgreen"]
-    nbr_cmap = ListedColormap(nbr_colors)
-
-    # Define class names
-    ndvi_cat_names = [
-        "No Vegetation",
-        "Bare Area",
-        "Low Vegetation",
-        "Moderate Vegetation",
-        "High Vegetation",
-    ]
-
-    # Get list of classes
-    #classes = np.unique(ndvi_landsat_class)
-    #classes = classes.tolist()
-    # The mask returns a value of none in the classes. remove that
-    classes = range(1, 6)
-
-    # Plot your data
-    fig, ax = plt.subplots(figsize=(12, 12))
-    im = ax.imshow(ndvi_landsat_class, cmap=nbr_cmap)
-    
-    print(classes)
-
-    #ep.draw_legend(im_ax=im, classes=classes, titles=ndvi_cat_names)
-    ax.set_title(
-        "Landsat 8 - Normalized Difference Vegetation Index (NDVI) Classes",
-        fontsize=14,
+def savi(nir_path, red_path, output, L=0.5):
+    return compute_index_and_save(
+        [nir_path, red_path],
+        output,
+        formula="savi",
+        bins=[-np.inf, 0, 0.1, 0.25, 0.4, np.inf],
+        colormap=["gray", "y", "yellowgreen", "g", "darkgreen"],
+        L=L
     )
-    ax.set_axis_off()
 
-    plt.tight_layout()
-    plt.savefig(output)
-    plt.close()
-    
-    #with rasterio.open(output, 'w', **meta) as out:
-    #    out.write_band(1, ndvi_arr)
-    
-def evi(blue_path, red_path, nir_path, output, L=1):
-    
-    with rasterio.open(blue_path) as blue_band:
-        blue = blue_band.read(1).astype('float32')
-        blue[blue == 0] = np.nan
-        
-    with rasterio.open(red_path) as red_band:
-        red = red_band.read(1).astype('float32')
-        red[red == 0] = np.nan
-                
-    with rasterio.open(nir_path) as nir_band:
-        nir = nir_band.read(1).astype('float32')
-        nir[nir == 0] = np.nan
-    
-    arr_1 = (nir + 6*red - 7.5 * blue + L)
-    arr_1[arr_1 == 0] = np.nan
-    evi_arr = (nir - red) / arr_1
-    evi_arr = (evi_arr + 1) * (2**15 - 1)
-    
-    # Plot the NDVI with a color scale
-    plt.clf()
+def evi(blue_path, red_path, nir_path, output, L=1.0):
+    blue = load_band(blue_path)[0]
+    red = load_band(red_path)[0]
+    nir = load_band(nir_path)[0]
+    evi_arr = (nir - red) / (nir + 6 * red - 7.5 * blue + L)
+    evi_arr = normalize_array(evi_arr)
+
     plt.imshow(evi_arr, cmap='RdYlGn')
     plt.colorbar()
-    #plt.show()
-    plt.savefig(output)
-    plt.close()
-    
-def savi(nir_path, red_path, output, L=0.5):
-    
-    with rasterio.open(red_path) as red_band:
-        red = red_band.read(1).astype('float32')
-        red[red == 0] = np.nan
-        
-    with rasterio.open(nir_path) as nir_band:
-        nir = nir_band.read(1).astype('float32')
-        nir[nir == 0] = np.nan
-    
-    #savi_arr = ((nir-red) / (nir + red + L)) * (1+L)
-    #savi_arr = (savi_arr + 1) * (2**15 - 1)
-    
-    savi_arr =  (((nir - red) / (nir + red + 0.5)) * 1.5)
-    
-    # Plot the NDVI with a color scale
-    plt.clf()
-    plt.imshow(savi_arr, cmap='RdYlGn')
-    plt.colorbar()
-    #plt.show()
     plt.savefig(output)
     plt.close()
 
-def normalize_array(arr, a, b):
-    min_array = np.min(arr)
-    max_array = np.max(arr)
-    
-    # Applying the normalization formula
-    normalized_arr = a + ((arr - min_array) * (b - a)) / (max_array - min_array)
-    
-    return normalized_arr
+    return evi_arr
 
-def ndwi_red(band4_path, band6_path, output):
-        
-    with rasterio.open(band4_path) as band4:
-        meta = band4.meta
-        band4_arr = band4.read(1).astype('float64')
-        #band4_arr[band4_arr == 0] = np.nan
-        
-    with rasterio.open(band6_path) as band6:
-        band6_arr = band6.read(1).astype('float64')
-        #band6_arr[band6_arr == 0] = np.nan
-    
-    ndwi = es.normalized_diff(band4_arr, band6_arr)
-    ndwi[np.isnan(ndwi)] = -1
-    
-    n_ndwi = normalize_array(ndwi, 0, 255)
-    # Save the NDVI image as TIFF
-    print("red",n_ndwi)
-    print("red",n_ndwi.min())
-    print("red",n_ndwi.max())
-    with rasterio.open(output.replace(".png", ".tif"), 'w', **meta) as out:
-        out.write_band(1, n_ndwi)  
-    
-    # Create classes and apply to NDWI results
-    ndwi_class_bins = [-np.inf, 0, 0.1, 0.25, 0.4, np.inf]
-    ndwi_landsat_class = np.digitize(ndwi, ndwi_class_bins)
-
-    # Apply the nodata mask to the newly classified NDWI data
-    ndwi_landsat_class = np.ma.masked_where(
-        np.ma.getmask(ndwi), ndwi_landsat_class
+def ndwi(green_path, nir_path, output, colormap):
+    return compute_index_and_save(
+        [green_path, nir_path],
+        output,
+        formula="nd",
+        bins=[-np.inf, 0, 0.1, 0.25, 0.4, np.inf],
+        colormap=colormap
     )
-    np.unique(ndwi_landsat_class)
 
-    # Define color map
-    ndwi_colors = ["gray", "lightskyblue", "skyblue", "b", "darkblue"]
-    ndwi_cmap = ListedColormap(ndwi_colors)
+def false_color(band_r_path, band_g_path, band_b_path, output):
+    band_r = load_band(band_r_path, replace_zeros=False)[0]
+    band_g = load_band(band_g_path, replace_zeros=False)[0]
+    band_b = load_band(band_b_path, replace_zeros=False)[0]
 
-    # Define class names
-    ndwi_cat_names = [
-        "No Water",
-        "Shallow Water",
-        "Moderate Water",
-        "Deep Water",
-        "Very Deep Water",
-    ]
+    rgb_stack = np.dstack([band_r, band_g, band_b])
+    rgb_norm = normalize(rgb_stack) * 255
+    Image.fromarray(rgb_norm.astype(np.uint8)).save(output)
 
-    # Get list of classes
-    #classes_ndwi = np.unique(ndwi_landsat_class)
-    #classes_ndwi = classes_ndwi.tolist()
-    # The mask returns a value of none in the classes. remove that
-    classes_ndwi = range(1,6) #classes_ndwi[0:5]
 
-    print(meta)
-    # Plot your data
-    px = 1/plt.rcParams['figure.dpi']  # pixel in inches
-    fig, ax = plt.subplots(figsize=(meta["width"]*px, meta["height"]*px))
-    im = ax.imshow(ndwi_landsat_class, cmap=ndwi_cmap)
+# === Miscellaneous ===
 
-    #ep.draw_legend(im_ax=im, classes=classes_ndwi, titles=ndwi_cat_names)
-    #ax.set_title(
-    #    "Landsat 8 - Normalized Difference Water Index (NDWI) Classes",
-    #    fontsize=14,
-    #)
-    ax.set_axis_off()
+def overlay_index_on_rgb(index_array, rgb, masked, out_path, width, height, extent, alpha=0.6):
+    """Overlays a single-band index (e.g., NDVI) on an RGB image using a light-to-strong blue colormap."""
+
+    # Normalize RGB
+    rgb = rgb / 255.0
+
+    # Normalize index to 0–1 for colormap
+    index_norm = (index_array - np.nanmin(index_array)) / (np.nanmax(index_array) - np.nanmin(index_array))
+
+    # Create consistent colormap
+    cmap = LinearSegmentedColormap.from_list("light_to_strong_blue", ["#add8e6", "#00008b"])  # #00008b = darkblue
+
+    # Apply colormap to normalized index (with alpha manually)
+    index_colored = cmap(index_norm)
+    index_colored[..., 3] = alpha  # Add uniform alpha
+
+    # Mask: where to overlay
+    mask = masked >= 2
+
+    # Create RGBA image from RGB
+    rgba_img = np.zeros((*rgb.shape[:2], 4), dtype='float32')
+    rgba_img[..., :3] = rgb  # Copy RGB
+    rgba_img[..., 3] = 0.6    # More transparent background
+
+    # Overlay colored index where mask is True
+    for i in range(3):  # Only R, G, B channels
+        rgba_img[..., i] = np.where(
+            mask,
+            (1 - alpha) * rgba_img[..., i] + alpha * index_colored[..., i],
+            rgba_img[..., i]
+        )
+
+    # Set alpha channel: more opaque where mask is True
+    rgba_img[..., 3] = np.where(mask, 1.0, rgba_img[..., 3])  # 1.0 = fully opaque in masked areas
+
+    # Normalize index values for colorbar
+    norm = Normalize(vmin=np.nanmin(index_array), vmax=np.nanmax(index_array))
+
+    px = 1 / plt.rcParams['figure.dpi']
+    fig, ax = plt.subplots(figsize=(width * px, height * px))
+
+    # Show the overlay image
+    ax.imshow(rgba_img, extent=extent)
+    ax.set_xlabel("Longitude")
+    ax.set_ylabel("Latitude")
+    ax.grid(True, linestyle='--', alpha=0.5)
+
+    # Create colorbar
+    sm = ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])  # Required dummy array
+    cbar = fig.colorbar(sm, ax=ax, orientation='vertical', fraction=0.03, pad=0.04)
+    cbar.set_label("Index Value")
 
     plt.tight_layout()
-    plt.savefig(output)
-    plt.close()
-    
-def ndwi_green(band3_path, band6_path, output):
-        
-    with rasterio.open(band3_path) as band3:
-        meta = band3.meta
-        band3_arr = band3.read(1).astype('float64')
-        band3_arr[band3_arr == 0] = np.nan
-        
-    with rasterio.open(band6_path) as band6:
-        band6_arr = band6.read(1).astype('float64')
-        band6_arr[band6_arr == 0] = np.nan
-        
-    #print(band3_arr)
-    
-    #ndwi_arr = (band3_arr - band6_arr) / (band3_arr + band6_arr)
-    ndwi = es.normalized_diff(band3_arr, band6_arr) 
-    ndwi[np.isnan(ndwi)] = -1
-    
-    n_ndwi = normalize_array(ndwi, 0, 255)
-    
-    # Save the NDVI image as TIFF
-    with rasterio.open(output.replace(".png", ".tif"), 'w', **meta) as out:
-        out.write_band(1, n_ndwi) 
-    
-    # Create classes and apply to NDWI results
-    ndwi_class_bins = [-np.inf, 0, 0.1, 0.25, 0.4, np.inf]
-    ndwi_landsat_class = np.digitize(ndwi, ndwi_class_bins)
-
-    # Apply the nodata mask to the newly classified NDWI data
-    ndwi_landsat_class = np.ma.masked_where(
-        np.ma.getmask(ndwi), ndwi_landsat_class
-    )
-    np.unique(ndwi_landsat_class)
-
-    # Define color map
-    ndwi_colors = ["gray", "lightskyblue", "skyblue", "b", "darkblue"]
-    ndwi_cmap = ListedColormap(ndwi_colors)
-
-    # Define class names
-    ndwi_cat_names = [
-        "No Water",
-        "Shallow Water",
-        "Moderate Water",
-        "Deep Water",
-        "Very Deep Water",
-    ]
-
-    # Get list of classes
-    #classes_ndwi = np.unique(ndwi_landsat_class)
-    #classes_ndwi = classes_ndwi.tolist()
-    # The mask returns a value of none in the classes. remove that
-    classes_ndwi = range(1,6) #classes_ndwi[0:5]
-
-    # Plot your data
-    px = 1/plt.rcParams['figure.dpi']  # pixel in inches
-    fig, ax = plt.subplots(figsize=(meta["width"]*px, meta["height"]*px))
-    im = ax.imshow(ndwi_landsat_class, cmap=ndwi_cmap)
-
-    #ep.draw_legend(im_ax=im, classes=classes_ndwi, titles=ndwi_cat_names)
-    #ax.set_title(
-    #    "Landsat 8 - Normalized Difference Water Index (NDWI) Classes",
-    #    fontsize=14,
-    #)
-    ax.set_axis_off()
-
-    plt.tight_layout()
-    plt.savefig(output)
+    plt.savefig(out_path.replace(".png", "_with_colorbar.png"), bbox_inches='tight', pad_inches=0)
     plt.close()
 
-def ndwi(band3_path, band5_path, output):
-    
-    with rasterio.open(band3_path) as band3:
-        band3_arr = band3.read(1).astype('float64')
-        meta = band3.meta
-        
-    with rasterio.open(band5_path) as band5:
-        band5_arr = band5.read(1).astype('float64')
-    
-    #ndwi_arr = (band3_arr - band5_arr) / (band3_arr + band5_arr)
-    
-    ndwi = es.normalized_diff(band3_arr, band5_arr) 
-    ndwi[np.isnan(ndwi)] = -1
-    
-    n_ndwi = normalize_array(ndwi, 0, 255)
-    
-    # Create classes and apply to NDWI results
-    ndwi_class_bins = [-np.inf, 0, 0.1, 0.25, 0.4, np.inf]
-    ndwi_landsat_class = np.digitize(ndwi, ndwi_class_bins)
-
-    # Apply the nodata mask to the newly classified NDWI data
-    ndwi_landsat_class = np.ma.masked_where(
-        np.ma.getmask(ndwi), ndwi_landsat_class
-    )
-    np.unique(ndwi_landsat_class)
-
-    # Define color map
-    ndwi_colors = ["gray", "lightskyblue", "skyblue", "b", "darkblue"]
-    ndwi_cmap = ListedColormap(ndwi_colors)
-
-    # Define class names
-    ndwi_cat_names = [
-        "No Water",
-        "Shallow Water",
-        "Moderate Water",
-        "Deep Water",
-        "Very Deep Water",
-    ]
-
-    # Get list of classes
-    #classes_ndwi = np.unique(ndwi_landsat_class)
-    #classes_ndwi = classes_ndwi.tolist()
-    # The mask returns a value of none in the classes. remove that
-    classes_ndwi = range(1,6) #classes_ndwi[0:5]
-
-    # Plot your data
-    px = 1/plt.rcParams['figure.dpi']  # pixel in inches
-    fig, ax = plt.subplots(figsize=(meta["width"]*px, meta["height"]*px))
-    im = ax.imshow(ndwi_landsat_class, cmap=ndwi_cmap)
-
-    #ep.draw_legend(im_ax=im, classes=classes_ndwi, titles=ndwi_cat_names)
-    #ax.set_title(
-    #    "Landsat 8 - Normalized Difference Water Index (NDWI) Classes",
-    #    fontsize=14,
-    #)
-    ax.set_axis_off()
-
-    plt.tight_layout()
-    plt.savefig(output)
-    plt.close()
-
-def false_color(band7_path, band6_path, band4_path, output):
-    with rasterio.open(band7_path) as band7:
-        band7_arr = band7.read(1).astype('float64')
-        
-    with rasterio.open(band6_path) as band6:
-        band6_arr = band6.read(1).astype('float64')
-        
-    with rasterio.open(band4_path) as band4:
-        band4_arr = band4.read(1).astype('float64')
-        
-    # Stack and scale bands
-    false_color = np.dstack((band7_arr, band6_arr, band4_arr))
-    
-    #normalize between 0 and 255
-    false_color = normalize(false_color) * 255
-    
-    print(false_color.max())
-    
-    im = Image.fromarray((false_color).astype(np.uint8))
-    im.save(output)
-    
-# in order to display the rgb image the array values need to be normalized 
-def normalize(array):
-    '''normalizes numpy arrays into scale 0.0 - 1.0'''
-    array_min, array_max = array.min(), array.max()
-    return((array-array_min)/(array_max - array_min))
-
-def get_mask(val,type='cloud'):
-    
-    """Get mask for a specific cover type"""
-
-    # convert to binary
-    bin_ = '{0:016b}'.format(val)
-
-    # reverse string
-    str_bin = str(bin_)[::-1]
-
-    # get bit for cover type
-    bits = {'cloud':3,'shadow':4,'dilated_cloud':1,'cirrus':2}
-    bit = str_bin[bits[type]]
-
-    if bit == '1':
-        return 0 # cover
-    else:
-        return 1 # no cover
+def get_mask(val, type='cloud'):
+    bits = {'cloud': 3, 'shadow': 4, 'dilated_cloud': 1, 'cirrus': 2}
+    return 0 if '{0:016b}'.format(val)[::-1][bits[type]] == '1' else 1
 
 def to_rgb_high_contrast(path, image_name, output):
-    blue_fp = os.path.join(path, '%s_B2.TIF' % image_name)
-    green_fp = os.path.join(path, '%s_B3.TIF' % image_name)
-    red_fp = os.path.join(path, '%s_B4.TIF' % image_name)
-    
-    # Load Blue (B2), Green (B3) and Red (B4) bands
-    B2 = tiff.imread(blue_fp)
-    B3 = tiff.imread(green_fp)
-    B4 = tiff.imread(red_fp)
-        
-    # Stack and scale bands
-    RGB = np.dstack((B4, B3, B2))
-    RGB = np.clip(RGB*0.0000275-0.2, 0, 1)
+    blue = tiff.imread(os.path.join(path, f'{image_name}_B2.TIF'))
+    green = tiff.imread(os.path.join(path, f'{image_name}_B3.TIF'))
+    red = tiff.imread(os.path.join(path, f'{image_name}_B4.TIF'))
+    rgb = np.stack([red, green, blue], axis=-1)
+    rgb = np.clip(rgb*0.0000275-0.2, 0, 1)
+    rgb = np.clip(rgb,0,0.3)/0.3
+    rgb_norm = normalize(rgb) * 255
+    Image.fromarray(rgb_norm.astype(np.uint8)).save(output)
 
-    # Clip to enhance contrast
-    RGB = np.clip(RGB,0,0.3)/0.3
-    im = Image.fromarray((RGB * 255).astype(np.uint8))
-    im.save(output)
-    # Plot the RGB image
-    #fig, ax = plt.subplots(figsize=(20, 10))
-    #ax.imshow(RGB)
-    #plt.show()
+    return rgb_norm
 
-def to_rgb(path, image_name, output):
-    blue_fp = os.path.join(path, '%s_B2.TIF' % image_name)
-    green_fp = os.path.join(path, '%s_B3.TIF' % image_name)
-    red_fp = os.path.join(path, '%s_B4.TIF' % image_name)
-    
-    blue_raster = rasterio.open(blue_fp)
-    green_raster = rasterio.open(green_fp)
-    red_raster = rasterio.open(red_fp)
 
-    green_band = green_raster.read(1)
-    blue_band = blue_raster.read(1)
-    red_band = red_raster.read(1)
+def generate_indexes(path, imagename, output=None):
+    """Run all index generation functions based on band paths."""
+    def make_path(band):
+        return os.path.join(path, f"{imagename}_B{band}.TIF")
+    
+    def make_output(name):
+        return os.path.join(output or path, f"{imagename}_{name}.png")
 
-    # normalize the bands
-    redn = normalize(red_band)
-    greenn = normalize(green_band)
-    bluen = normalize(blue_band)
+    rgb_path = make_output("RGB")
 
-    # create RGB natural color composite
-    rgb = np.dstack((redn, greenn, bluen))
+    meta = load_band(make_path(1))[1]
 
-    # Convert to integer type
-    rgb = (rgb * 255).astype(np.uint8) 
     
-    im = Image.fromarray(rgb)
-    im.save(output)
+    #ndvi_img = ndvi(make_path(5), make_path(4), make_output("NDVI"))
+    #savi_img = savi(make_path(5), make_path(4), make_output("SAVI"))
+    ndwi_img, ndwi_masked = ndwi(make_path(3), make_path(5), make_output("NDWI"), ["gray", "lightskyblue", "skyblue", "b", "darkblue"])
+    #evi_img = evi(make_path(2), make_path(4), make_path(5), make_output("EVI"))
     
-    
-def remove_clouds(path, image_name, output):
-    blue_fp = os.path.join(path, '%s_B2.TIF' % image_name)
-    green_fp = os.path.join(path, '%s_B3.TIF' % image_name)
-    red_fp = os.path.join(path, '%s_B4.TIF' % image_name)
-    
-    # Load Blue (B2), Green (B3) and Red (B4) bands
-    B2 = tiff.imread(blue_fp)
-    B3 = tiff.imread(green_fp)
-    B4 = tiff.imread(red_fp)
-        
-    # Stack and scale bands
-    RGB = np.dstack((B4, B3, B2))
-    RGB = np.clip(RGB*0.0000275-0.2, 0, 1)
+    false_color(make_path(5), make_path(4), make_path(3), make_output("false_color"))
+    rgb = to_rgb_high_contrast(path, imagename, rgb_path)
 
-    # Clip to enhance contrast
-    RGB = np.clip(RGB,0,0.3)/0.3
-    
-    QA_path = os.path.join(path, '%s_QA_PIXEL.TIF' % image_name)
-    QA = tiff.imread(QA_path)
-    QA = np.array(QA)
-    
-    # Get masks
-    print("Getting masks")
-    print("getting cloud mask")
-    cloud_mask = np.vectorize(get_mask)(QA,type='cloud')
-    """print("getting shadow mask")
-    shadow_mask = np.vectorize(get_mask)(QA,type='shadow')
-    print("getting dilated cloud mask")
-    dilated_cloud_mask = np.vectorize(get_mask)(QA,type='dilated_cloud')
-    print("getting cirrus mask")
-    cirrus_mask = np.vectorize(get_mask)(QA,type='cirrus')
-    
-    # color for each cover type
-    colors = np.array([[247, 2, 7],
-                        [201, 116, 247],
-                        [0, 234, 255],
-                        [3, 252, 53]])/255
+    # << NEW: Overlay masks
+    #overlay_index_on_rgb(ndvi_img, rgb_path, make_output("RGB_NDVI_overlay"))
+    #overlay_index_on_rgb(savi_img, rgb_path, make_output("RGB_SAVI_overlay"))
 
-    masks = [cloud_mask, shadow_mask, dilated_cloud_mask, cirrus_mask]
-    
-    #fig, ax = plt.subplots(figsize=(20, 10))
-    #ax.imshow(RGB)
-    #plt.show()"""
-    
-    # Remove clouds
-    rm_clouds = RGB*cloud_mask[:, :, np.newaxis]
-    im = Image.fromarray((rm_clouds * 255).astype(np.uint8))
-    im.save(output)
-    
+    extent = [-101.306667, -100.839748, 19.871558, 20.076776]
 
-def generate_indexes(path, image, output):
-    print("path", path)
-    
-    #remove last slash if exists
-    if path[-1] == "/":
-        path = path[:-1]
-    
-    dir_name = os.path.basename(path)
-    print("aa",image)
-    os.makedirs(os.path.join(output, dir_name), exist_ok=True)
-    #remove_clouds(path, image, os.path.join(output, image, "clouds_removed_" + image + ".png"))
-    to_rgb(path, image, os.path.join(output, dir_name, "rgb_" + image + ".png"))
-    to_rgb_high_contrast(path, image, os.path.join(output, dir_name, "rgb_high_contrast_" + image + ".png"))
-    ndvi(os.path.join(path, image + "_B5.TIF"), os.path.join(path, image + "_B4.TIF"), os.path.join(output, dir_name,"ndvi_" + image + ".png"))
-    
-    #evi(os.path.join(path, image + "_B2.TIF"), os.path.join(path, image + "_B4.TIF"), os.path.join(path, image + "_B5.TIF"), os.path.join(output, image,"evi_" + image + ".png"))
-    
-    #savi(os.path.join(path, image + "_B5.TIF"), os.path.join(path, image + "_B4.TIF"), os.path.join(output, image,"savi_" + image + ".png"))
-    ndwi_green(os.path.join(path, image + "_B3.TIF"), os.path.join(path, image + "_B7.TIF"), os.path.join(output, dir_name,"ndwi_green_b7" + image + ".png"))
-    
-    ndwi_red(os.path.join(path, image + "_B4.TIF"), os.path.join(path, image + "_B7.TIF"), os.path.join(output, dir_name,"ndwi_red_b7" + image + ".png"))
-    
-    ndwi_green(os.path.join(path, image + "_B3.TIF"), os.path.join(path, image + "_B6.TIF"), os.path.join(output, dir_name,"ndwi_green_b6" + image + ".png"))
-    
-    ndwi_red(os.path.join(path, image + "_B4.TIF"), os.path.join(path, image + "_B6.TIF"), os.path.join(output, dir_name,"ndwi_red_b6" + image + ".png"))
-    
-    ndwi(os.path.join(path, image + "_B4.TIF"), os.path.join(path, image + "_B5.TIF"), os.path.join(output, dir_name,"ndwi_b4" + image + ".png"))
-    ndwi(os.path.join(path, image + "_B3.TIF"), os.path.join(path, image + "_B5.TIF"), os.path.join(output, dir_name,"ndwi_b4" + image + ".png"))
-    #false_color(os.path.join(path, image + "_B7.TIF"), os.path.join(path, image + "_B6.TIF"), os.path.join(path, image + "_B4.TIF"), os.path.join(output, image,"false_color_" + image + ".png"))
-    
-parser = argparse.ArgumentParser(
-                    prog='LandSat8ToRGB',
-                    description='Creates a PNG from the LandSat8 bands.')
 
-parser.add_argument('path')           # positional argument
-parser.add_argument('imagename')           # positional argument
-parser.add_argument('-o', '--output') 
+    overlay_index_on_rgb(ndwi_img, rgb, ndwi_masked, make_output("RGB_NDWI_overlay"), meta["width"], meta["height"], extent)
+    #overlay_index_on_rgb(evi_img, rgb_path, make_output("RGB_EVI_overlay"))
 
-args = parser.parse_args()
-generate_indexes(args.path, args.imagename, output=args.output) 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog='LandSat8ToRGB',
+        description='Creates vegetation and water index PNGs from LandSat 8 bands.')
+
+    parser.add_argument('path', help='Directory containing band files')
+    parser.add_argument('imagename', help='Base name of the image, e.g., LC08_L1TP_...')
+    parser.add_argument('-o', '--output', help='Output directory for PNGs and TIFFs')
+
+    args = parser.parse_args()
+    generate_indexes(args.path, args.imagename, output=args.output)

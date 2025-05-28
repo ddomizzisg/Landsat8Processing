@@ -10,7 +10,7 @@
 #include <thread>
 #include <algorithm>
 #include <set>
-#include<filesystem>
+#include <filesystem>
 
 #include "functions/stringfunctions.h"
 

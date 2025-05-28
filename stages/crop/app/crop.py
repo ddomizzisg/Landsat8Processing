@@ -5,6 +5,9 @@ from shapely.geometry import box
 import argparse
 import os
 
+# 20.076776, -101.306667
+#19.871558, -100.839748
+
 def crop_bands(path, image_name, min_lat, min_lon, max_lat, max_lon, output=None):
     os.makedirs(os.path.join(output, image_name), exist_ok=True)
     bbox = box(min_lon, min_lat, max_lon, max_lat)

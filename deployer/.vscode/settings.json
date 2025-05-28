@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "*.proto": "less",
+        "string": "cpp",
+        "format": "cpp",
+        "ostream": "cpp"
+    }
+}

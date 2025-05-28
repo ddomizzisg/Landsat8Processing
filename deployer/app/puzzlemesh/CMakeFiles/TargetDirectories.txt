@@ -1,3 +1,0 @@
-/home/app/puzzlemesh/CMakeFiles/rebuild_cache.dir
-/home/app/puzzlemesh/CMakeFiles/edit_cache.dir
-/home/app/puzzlemesh/CMakeFiles/puzzlemesh.dir

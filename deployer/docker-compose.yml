@@ -12,7 +12,20 @@ services:
       - './cfg-files:/cfg-files' #Configuration files
       - './app/:/home/app'
     environment:
-      HOST_PATH: /home/dsanchez/newtests/Landsat8Processing/deployer
+      HOST_PATH: /home/domizzi/Documents/GitHub/Landsat8Processing/deployer
+  endpoint1:
+    build: cliente
+    image: ddomizzi/endpointnez:v1
+    tty: true
+    restart: unless-stopped
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock' #Docker deamon
+      - './results:/home/app/results' #Deployer
+      - '/home/dsanchez/downloadlandsat:/home/dsanchez/downloadlandsat' #Data source
+      - './cfg-files:/cfg-files' #Configuration files
+      - './app/:/home/app'
+    environment:
+      HOST_PATH: /home/domizzi/Documents/GitHub/Landsat8Processing/deployer
   mongo:
     image: mongo:4.2
     restart: always
