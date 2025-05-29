@@ -12,6 +12,19 @@ from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap, Normalize
 from matplotlib.cm import ScalarMappable
 
+plt.style.use("paper.mplstyle")
+
+pt = 1./72.27
+jour_sizes = {"PRD": {"onecol": 246.*pt, "twocol": 510.*pt},
+              "CQG": {"onecol": 374.*pt}, }
+my_width = jour_sizes["PRD"]["twocol"]
+golden = (1 + 5 ** 0.5) / 2
+# golden = (1 + 5 ** 0.5) / 2.4 # you can modify here for a higher height if needed
+plt.rcParams.update({
+    'axes.labelsize': 14,       # Axis label font size
+    'legend.fontsize': 14,      # Legend font size
+    'xtick.labelsize': 12,      # X-axis tick label font size
+})
 
 # === Generic helpers ===
 
@@ -48,7 +61,7 @@ def plot_index(index, output, meta, colormap, bins, class_names=None, overlay=No
     classified = np.digitize(index, bins)
     masked = np.ma.masked_where(np.ma.getmask(index), classified)
     px = 1 / plt.rcParams['figure.dpi']
-    fig, ax = plt.subplots(figsize=(meta["width"] * px, meta["height"] * px))
+    fig, ax = plt.subplots(figsize=(my_width, my_width / golden))
     ax.imshow(masked, cmap=ListedColormap(colormap))
     ax.set_axis_off()
     plt.tight_layout()
@@ -170,7 +183,7 @@ def overlay_index_on_rgb(index_array, rgb, masked, out_path, width, height, exte
     norm = Normalize(vmin=np.nanmin(index_array), vmax=np.nanmax(index_array))
 
     px = 1 / plt.rcParams['figure.dpi']
-    fig, ax = plt.subplots(figsize=(width * px, height * px))
+    fig, ax = plt.subplots(figsize=(my_width, my_width / golden))
 
     # Show the overlay image
     ax.imshow(rgba_img, extent=extent)
@@ -185,7 +198,76 @@ def overlay_index_on_rgb(index_array, rgb, masked, out_path, width, height, exte
     cbar.set_label("Index Value")
 
     plt.tight_layout()
-    plt.savefig(out_path.replace(".png", "_with_colorbar.png"), bbox_inches='tight', pad_inches=0)
+    plt.savefig(out_path.replace(".png", "_with_colorbar.png"), bbox_inches='tight', pad_inches=0, dpi=800)
+    plt.close()
+
+
+def overlay_index_on_rgb2(index_array, rgb, masked, out_path, width, height, extent, alpha=0.6):
+    """Overlays a single-band index (e.g., NDVI) on an RGB image using a light-to-strong blue colormap."""
+
+    # Normalize RGB
+    rgb = rgb / 255.0
+
+    # Normalize index to 0–1 for colormap
+    index_norm = (index_array - np.nanmin(index_array)) / (np.nanmax(index_array) - np.nanmin(index_array))
+
+    # Create consistent colormap
+    cmap = LinearSegmentedColormap.from_list("light_to_strong_blue", ["#add8e6", "#00008b"])  # #00008b = darkblue
+
+    # Apply colormap to normalized index (with alpha manually)
+    index_colored = cmap(index_norm)
+    index_colored[..., 3] = alpha  # Add uniform alpha
+
+    # Mask: where to overlay
+    mask = masked >= 2
+
+    # Create RGBA image from RGB
+    rgba_img = np.zeros((*rgb.shape[:2], 4), dtype='float32')
+    rgba_img[..., :3] = rgb  # Copy RGB
+    rgba_img[..., 3] = 0.5    # More transparent background
+
+    # Overlay colored index where mask is True
+    for i in range(3):  # Only R, G, B channels
+        rgba_img[..., i] = np.where(
+            mask,
+            (1 - alpha) * rgba_img[..., i] + alpha * index_colored[..., i],
+            rgba_img[..., i]
+        )
+
+    # Set alpha channel: more opaque where mask is True
+    rgba_img[..., 3] = np.where(mask, 1.0, rgba_img[..., 3])  # 1.0 = fully opaque in masked areas
+
+    # Normalize index values for colorbar
+    norm = Normalize(vmin=np.nanmin(index_array), vmax=np.nanmax(index_array))
+
+    # Get pixel dimensions of the image
+    img_height, img_width = rgba_img.shape[:2]
+
+    # Set figure size to match image dimensions exactly
+    dpi = 300  # Use any consistent DPI
+    figsize = (img_width / dpi, img_height / dpi)
+    print(width, height)
+    print(img_height, img_width)
+    print(figsize)
+
+    fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
+
+    # Show the overlay image
+    ax.imshow(rgba_img, extent=extent, origin='upper', aspect='auto')
+    #ax.set_axis_off()
+    plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+    ax.set_xlabel("Longitude")
+    ax.set_ylabel("Latitude")
+    ax.grid(True, linestyle='--', alpha=0.5)
+
+    # # Create colorbar
+    sm = ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])  # Required dummy array
+    cbar = fig.colorbar(sm, ax=ax, orientation='vertical', fraction=0.03, pad=0.04)
+    cbar.set_label("Index Value")
+
+    plt.tight_layout()
+    plt.savefig(out_path.replace(".png", "_with_colorbar.png"), bbox_inches='tight', pad_inches=0, dpi=dpi)
     plt.close()
 
 def get_mask(val, type='cloud'):
