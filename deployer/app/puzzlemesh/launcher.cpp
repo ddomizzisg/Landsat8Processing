@@ -7,7 +7,7 @@ void Launcher::execute(string mode)
 	this->coupling();
 	this->buildYML(mode);
 
-	/*compose_command = "docker-compose --log-level ERROR -p " + this->workpath_container + "/results/" + this->workflow->getWorkdir() +
+	compose_command = "docker-compose --log-level ERROR -p " + this->workpath_container + "/results/" + this->workflow->getWorkdir() +
 					  " -f " + this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml ";
 
 	//Deploy YML
@@ -15,7 +15,7 @@ void Launcher::execute(string mode)
 
 	//system(up_command.c_str());
 	this->workflow->downloadInputData(this->workpath_container + "/results");
-	this->workflow->execute(this->workpath + "/results", compose_command);*/
+	this->workflow->execute(this->workpath + "/results", compose_command);
 }
 
 
@@ -47,7 +47,7 @@ void Launcher::start(string mode)
 	this->coupling();
 	this->buildYML(mode);
 
-	/*if (boost::iequals(mode, "swarm"))
+	if (boost::iequals(mode, "swarm"))
 	{
 		up_command = "docker stack deploy --compose-file " + this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml " + this->workflow->getWorkdir();
 		;
@@ -57,6 +57,11 @@ void Launcher::start(string mode)
 		compose_command = "docker-compose --log-level ERROR -p " + this->workpath_container + "/results/" + this->workflow->getWorkdir() +
 						  " -f " + this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml ";
 		up_command = compose_command + " up -d --build";
+		// //search fo replicas
+		for (auto x : patterns)
+		{
+			up_command += " --scale " + x.second->getWorker()->getName() + "=" + ::to_string(x.second->getNWorkers()) + " ";
+		}
 
 		up_command += " 2> /dev/null";
 	}
@@ -77,7 +82,7 @@ void Launcher::start(string mode)
 	}
 
 	Logger("LAUCHER: to shutdown the containers execute  \n\n" + down_command + "\n\n", true);
-	//printJSON(compose_command);*/
+	printJSON(compose_command);
 }
 
 void Launcher::printMonitoringFile(vector<string> containers)
@@ -372,9 +377,8 @@ void Launcher::getVolumes(BuildingBlock *b, string target, set<vector<string>> &
 
 void Launcher::buildYML(string mode)
 {
-
 	string yml_base = {"version: \'3\'\nservices:\n"};
-	string links, auxPath, pwdStr, imageservice, restservice, volumesservice, portsservice, nameservice;
+	string links, auxPath, pwdStr;
 	ofstream yml;
 	vector<string> ports;
 	BuildingBlock *bb;
@@ -386,80 +390,50 @@ void Launcher::buildYML(string mode)
 
 	Logger("LAUNCHER: Creating YML file at " + this->workflow->getWorkdir() + "/docker-compose.yml", true);
 
-	for(auto stg:stages)
-	{
-		if(stg.second->isRemote()){
-			cout << "Remote stage " << stg.second->getName() << endl;
-			yml.open(this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose-" + stg.second->getName() + ".yml");
-		}
-	}
-
-	/*if (boost::iequals(mode, "swarm"))
-	{
-		yml_base = {"version: \'3\'\nservices:\n"};
-	}
-	else
-	{
-		yml_base = {"version: \'2.4\'\nservices:\n"};
-	}*/
-
-	/*yml.open(this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml");
+	yml.open(this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml");
 
 	ifstream test;
 
-	for (auto ptr : patterns)
+	for (auto x : singles)
 	{
-		for (auto sgl : singles)
+		std::cout << x.second->getName() << std::endl;
+		yml_base += "    " + x.second->getName() + ": \n";
+
+		if (boost::iequals(mode, "swarm"))
 		{
-			if(ptr.second->getWorker()->getName().compare(sgl.second->getName()) == 0){
-				getVolumes(this->workflow, sgl.second->getName(), volumes);
+			yml_base += "        image: 127.0.0.1:5000/" + x.second->getImage() + "\n";
+		}
+		else
+		{
+			yml_base += "        image: " + x.second->getImage() + "\n";
+		}
 
-				if (boost::iequals(mode, "swarm"))
-				{
-					imageservice = "        image: 127.0.0.1:5000/" + sgl.second->getImage() + "\n";
-				}
-				else
-				{
-					imageservice = "        image: " + sgl.second->getImage() + "\n";
-				}
+		yml_base += "        restart: always\n";
+		yml_base += "        expose:\n            - \"5000/tcp\"\n";
+		yml_base += "        volumes:\n";
+		yml_base += "            - \"" + pwdStr + "/results/" + this->workflow->getWorkdir() + ":" + pwdStr + "/results/" + this->workflow->getWorkdir() + "\"\n";
 
-				restservice = "        restart: always\n";
-				restservice += "        expose:\n            - \"5000/tcp\"\n";
-				//restservice += "        cpus: 1\n";
-				restservice += "        volumes:\n";
-				restservice += "            - \"" + pwdStr + "/results/" + this->workflow->getWorkdir() + ":" + pwdStr + "/results/" + this->workflow->getWorkdir() + "\"\n";
-				volumesservice = "";
+		getVolumes(this->workflow, x.second->getName(), volumes);
 
-				for (auto vl : volumes)
-				{
-					volumesservice += "            - \"" + vl[0] + ":" + vl[1] + "\"\n";
-				}
+		for (auto vl : volumes)
+		{
+			yml_base += "            - \"" + vl[0] + ":" + vl[1] + "\"\n";
+		}
 
-				volumes.clear();
+		volumes.clear();
 
-				ports = sgl.second->getPorts();
-				if (ports.size() > 0)
-				{
-					portsservice = "        ports:\n";
-					for (auto vl : ports)
-					{
-						portsservice += "            - \"" + vl + "\"\n";
-					}
-				}
-
-				for(int i = 0; i < ptr.second->getNWorkers(); i++)
-				{
-					nameservice = sgl.second->getName() + std::to_string(i);
-					yml_base += "    " + nameservice + ": \n";
-					yml_base += imageservice;
-					yml_base += restservice;
-					yml_base += volumesservice;
-					yml_base += portsservice;
-					links += "             - " + nameservice + "\n";
-				}
-				
+		ports = x.second->getPorts();
+		if (ports.size() > 0)
+		{
+			yml_base += "        ports:\n";
+			for (auto vl : ports)
+			{
+				cout << vl << endl;
+				yml_base += "            - \"" + vl + "\"\n";
 			}
 		}
+
+		links += "             - " + x.second->getName() + "\n";
 	}
 
 	for (auto x : patterns)
@@ -502,23 +476,23 @@ void Launcher::buildYML(string mode)
 
 			// yml_base += "            - \""+x.second->getSource()+":"+x.second->getSource()+"\"\n";
 			// yml_base += "            - \""+x.second->getSink()+":"+x.second->getSink()+"\"\n";
-			//yml_base += "        links:\n";
-			//yml_base += "            - " + x.second->getWorker()->getName() + "\n";
-			//links += "             - lb" + x.second->getName() + "\n";
+			yml_base += "        links:\n";
+			yml_base += "            - " + x.second->getWorker()->getName() + "\n";
+			links += "             - lb" + x.second->getName() + "\n";
 		}
 	}
 
 	if (boost::iequals(mode, "swarm"))
 	{
-		yml_base += "    proxy:\n        image: 127.0.0.1:5000/microservice:base\n";//        links:\n" + links;
+		yml_base += "    proxy:\n        image: 127.0.0.1:5000/microservice:base\n        links:\n" + links;
 	}
 	else
 	{
-		yml_base += "    proxy:\n        image: microservice:base\n ";//       links:\n" + links;
+		yml_base += "    proxy:\n        image: microservice:base\n        links:\n" + links;
 	}
 	
 	yml << yml_base << endl;
-	yml.close();*/
+	yml.close();
 }
 
 bool Launcher::downloadData(string apikey, string token, string access)

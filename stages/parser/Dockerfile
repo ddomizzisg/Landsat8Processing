@@ -1,7 +1,6 @@
-FROM python:3.9-buster
+FROM python:3.9-bullseye
 
 RUN apt-get update
-ENV GOOGLE_KEY='AIzaSyD6ecliaEzPAeolaKjSwswOkxIIGTQxKw4'
 
 WORKDIR /app
 ADD code /app

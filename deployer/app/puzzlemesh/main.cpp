@@ -69,7 +69,7 @@ int parseCDM(int argc, char const *argv[])
                                 parser->getPatterns(), parser->getStages(),
                                 parser->getBBs(), filename);
 
-        
+
         boost::algorithm::to_lower_copy(execute);
         bool doExec = !execute.empty() || execute.compare("T") == 0;
         bool doStop = !stop.empty() || stop.compare("T") == 0;

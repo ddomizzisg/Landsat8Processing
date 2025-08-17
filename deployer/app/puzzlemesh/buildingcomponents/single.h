@@ -74,7 +74,7 @@ public:
     list<string> getInputs();
     string getImage();
     results execute(string workdirbase, vector<string> contents, string compose_command, bool readFromDir, int id_worker);
-    json processFile(string workdirbase, string content, string compose_command, int id_worker);
+    json processFile(string workdirbase, string content, string compose_command);
     vector<string> getPorts();
     void setPorts(vector<string> ports);
     void setNode(string node);

@@ -8,3 +8,4 @@ Flask-API
 rasterio
 matplotlib
 earthpy
+setuptools

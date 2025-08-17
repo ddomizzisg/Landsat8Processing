@@ -83,13 +83,12 @@ void Pattern::execute(string workdirbase, vector<string> sourcesPaths, string co
     result = exec_cmd(curl_command.c_str());
     auto end = chrono::steady_clock::now();
     //parse result
-    //cout << curl_command << endl;
-    //cout << result << endl;
+    cout << curl_command << endl;
+    cout << result << endl;
     auto json_result = json::parse(result);
     Logger(this->name + ": load balancer executed in RT = " + ::to_string(chrono::duration_cast<chrono::milliseconds>(end - start).count()) + " miliseconds", true);
     auto elements = json_result["result"];
     // cout << data << endl;
-    //cout << json_result["result"] << endl;
     //result.substr(1, result.size() - 1);
     // auto elements = json::parse(result);
     // cout << "aqui" << endl;

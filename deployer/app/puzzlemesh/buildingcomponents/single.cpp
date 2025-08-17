@@ -30,7 +30,7 @@ string Single::getImage()
     return this->image;
 }
 
-json Single::processFile(string workdirbase, string c, string compose_command, int id_worker)
+json Single::processFile(string workdirbase, string c, string compose_command)
 {
     string complete_workdir, final_cmd, curl_command, result;
     json j;
@@ -45,7 +45,8 @@ json Single::processFile(string workdirbase, string c, string compose_command, i
     final_cmd = boost::replace_all_copy(final_cmd, "@N", getFileNameWithoutExt(c).c_str());
     final_cmd = boost::replace_all_copy(final_cmd, "@L", getFileName(c).c_str());
     final_cmd = boost::replace_all_copy(final_cmd, "@S", dirnameOf(c).c_str());
-    curl_command = compose_command + " exec -T " + this->getName() + std::to_string(id_worker) + " sh -c \"" + final_cmd + "\"";
+    curl_command = compose_command + " exec -T " + this->getName() + " sh -c \"" + final_cmd + "\"";
+    cout << final_cmd << endl;
     fSize = filesize(c.c_str());
 
     //Execute bb command
@@ -67,17 +68,16 @@ results Single::execute(string workdirbase, vector<string> contents, string comp
     float totalTime;
     long sizeTotal;
     json j;
-    string logs;
     vector<string> filesInDir;
-    //Logger(this->name + ": waiting", true);
-    //this->state = WAITING;
+    Logger(this->name + ": waiting", true);
+    this->state = WAITING;
 
-    //this->state = WORKING;
-    //Logger(this->name + ": running", true);
+    this->state = WORKING;
+    Logger(this->name + ": running", true);
 
     totalTime = 0;
     sizeTotal = 0;
-    //auto start = chrono::steady_clock::now();
+    auto start = chrono::steady_clock::now();
     for (auto c : contents)
     {
         // if (isDir(c))
@@ -90,16 +90,16 @@ results Single::execute(string workdirbase, vector<string> contents, string comp
         // }
         // else
         // {
-            j = this->processFile(workdirbase, c, compose_command, id_worker);
+            j = this->processFile(workdirbase, c, compose_command);
         // }
         // totalTime += stof(j["response_time"].dump());
         sizeTotal += stol(j["size"].dump());
         //Logger(this->name + ": executed in ST=" + json_result["response_time"].dump() + " RT = " + ::to_string(chrono::duration_cast<chrono::milliseconds>(end - start).count()) + " miliseconds", true);
     }
-    //auto end = chrono::steady_clock::now();
+    auto end = chrono::steady_clock::now();
     double th = sizeTotal / totalTime;
-    //Logger(this->name + ": processed " + ::to_string(sizeTotal) + " bytes in ST=" + ::to_string(totalTime) + " RT = " + ::to_string(chrono::duration_cast<chrono::milliseconds>(end - start).count()) + " miliseconds", true);
-    //this->state = COMPLETED;
+    Logger(this->name + ": processed " + ::to_string(sizeTotal) + " bytes in ST=" + ::to_string(totalTime) + " RT = " + ::to_string(chrono::duration_cast<chrono::milliseconds>(end - start).count()) + " miliseconds", true);
+    this->state = COMPLETED;
     results rs;
     rs.size = sizeTotal;
     rs.th = th;

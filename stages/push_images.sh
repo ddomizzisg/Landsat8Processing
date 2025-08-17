@@ -1,0 +1,9 @@
+docker push ddomizzi/corrections:landsat
+docker push ddomizzi/parser:landsat
+docker push ddomizzi/uncompress:landsat
+docker push ddomizzi/atmospheric:landsat 
+docker push ddomizzi/radiometric:landsat 
+docker push ddomizzi/derivatives:landsat 
+docker push ddomizzi/crop:landsat 
+docker push ddomizzi/summary:landsat 
+docker push ddomizzi/tc:balancer 
