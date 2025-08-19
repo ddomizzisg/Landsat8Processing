@@ -377,123 +377,146 @@ void Launcher::getVolumes(BuildingBlock *b, string target, set<vector<string>> &
 
 void Launcher::buildYML(string mode)
 {
-	string yml_base = {"version: \'3\'\nservices:\n"};
-	string links, auxPath, pwdStr;
-	ofstream yml;
-	vector<string> ports;
-	BuildingBlock *bb;
-	Single auxSingle;
-	Pattern auxPatt;
-	set<vector<string>> volumes;
+    using std::string;
+    using std::vector;
+    using std::unordered_set;
 
-	pwdStr = this->workpath;
+    string yml_base = {"version: '3.9'\nservices:\n"};
+    string auxPath, pwdStr;
+    ofstream yml;
+    vector<string> ports;
+    BuildingBlock *bb;
 
-	Logger("LAUNCHER: Creating YML file at " + this->workflow->getWorkdir() + "/docker-compose.yml", true);
+    // Collect names to build networks section at the end
+    unordered_set<string> backend_nets;   // e.g., net_derivatives, net_crop, ...
+    vector<string> lb_names;              // lb services for proxy depends_on
+    vector<string> worker_names;          // worker service names (from singles)
 
-	yml.open(this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml");
+    pwdStr = this->workpath;
 
-	ifstream test;
+    Logger("LAUNCHER: Creating YML file at " + this->workflow->getWorkdir() + "/docker-compose.yml", true);
+    yml.open(this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml");
 
-	for (auto x : singles)
-	{
-		std::cout << x.second->getName() << std::endl;
-		yml_base += "    " + x.second->getName() + ": \n";
+    // -------- WORKER SERVICES (singles) --------
+    for (auto &kv : singles)
+    {
+        auto *svc = kv.second;
+        const string name = svc->getName();
+        worker_names.push_back(name);
 
-		if (boost::iequals(mode, "swarm"))
-		{
-			yml_base += "        image: 127.0.0.1:5000/" + x.second->getImage() + "\n";
-		}
-		else
-		{
-			yml_base += "        image: " + x.second->getImage() + "\n";
-		}
+        yml_base += "  " + name + ":\n";
+        if (boost::iequals(mode, "swarm"))
+            yml_base += "    image: 127.0.0.1:5000/" + svc->getImage() + "\n";
+        else
+            yml_base += "    image: " + svc->getImage() + "\n";
 
-		yml_base += "        restart: always\n";
-		yml_base += "        expose:\n            - \"5000/tcp\"\n";
-		yml_base += "        volumes:\n";
-		yml_base += "            - \"" + pwdStr + "/results/" + this->workflow->getWorkdir() + ":" + pwdStr + "/results/" + this->workflow->getWorkdir() + "\"\n";
+        yml_base += "    restart: always\n";
+        yml_base += "    expose:\n";
+        yml_base += "      - \"5000\"\n";
+        yml_base += "    volumes:\n";
+        yml_base += "      - \"" + pwdStr + "/results/" + this->workflow->getWorkdir() + ":" + pwdStr + "/results/" + this->workflow->getWorkdir() + "\"\n";
 
-		getVolumes(this->workflow, x.second->getName(), volumes);
+        // Append discovered volumes for this worker
+        set<vector<string>> volumes;
+        getVolumes(this->workflow, name, volumes);
+        for (auto &vl : volumes)
+            yml_base += "      - \"" + vl[0] + ":" + vl[1] + "\"\n";
 
-		for (auto vl : volumes)
-		{
-			yml_base += "            - \"" + vl[0] + ":" + vl[1] + "\"\n";
-		}
+        // Optional published ports (if any defined on Single)
+        ports = svc->getPorts();
+        if (!ports.empty())
+        {
+            yml_base += "    ports:\n";
+            for (auto &p : ports)
+                yml_base += "      - \"" + p + "\"\n";
+        }
 
-		volumes.clear();
+        // Attach worker to its own backend network
+        const string netname = "net_" + name;
+        backend_nets.insert(netname);
+        yml_base += "    networks:\n";
+        yml_base += "      - " + netname + "\n";
+    }
 
-		ports = x.second->getPorts();
-		if (ports.size() > 0)
-		{
-			yml_base += "        ports:\n";
-			for (auto vl : ports)
-			{
-				cout << vl << endl;
-				yml_base += "            - \"" + vl + "\"\n";
-			}
-		}
+    // -------- LB SERVICES (patterns of type MW) --------
+    for (auto &kv : patterns)
+    {
+        auto *pat = kv.second;
+        if (pat->getPattern().compare("MW") != 0) continue;
 
-		links += "             - " + x.second->getName() + "\n";
-	}
+        const string lbname = "lb" + pat->getName();
+        lb_names.push_back(lbname);
 
-	for (auto x : patterns)
-	{
-		if (x.second->getPattern().compare("MW") == 0)
-		{
-			yml_base += "    lb" + x.second->getName() + ": \n";
+        yml_base += "  " + lbname + ":\n";
+        if (boost::iequals(mode, "swarm"))
+            yml_base += "    image: 127.0.0.1:5000/" + boost::algorithm::to_lower_copy(pat->getLB()) + ":balancer\n";
+        else
+            yml_base += "    image: " + boost::algorithm::to_lower_copy(pat->getLB()) + ":balancer\n";
 
-			if (boost::iequals(mode, "swarm"))
-			{
-				yml_base += "        image: 127.0.0.1:5000/" + boost::algorithm::to_lower_copy(x.second->getLB()) + ":balancer\n";
-			}
-			else
-			{
-				yml_base += "        image: " + boost::algorithm::to_lower_copy(x.second->getLB()) + ":balancer\n";
-			}
+        yml_base += "    restart: always\n";
+        yml_base += "    expose:\n";
+        yml_base += "      - \"5000\"\n";
+        yml_base += "    depends_on:\n";
+        yml_base += "      - " + pat->getWorker()->getName() + "\n";
+        yml_base += "    volumes:\n";
+        yml_base += "      - \"" + pwdStr + "/results/" + this->workflow->getWorkdir() + ":" + pwdStr + "/results/" + this->workflow->getWorkdir() + "\"\n";
 
-			yml_base += "        restart: always\n";
-			yml_base += "        expose:\n            - \"5000/tcp\"\n";
-			yml_base += "        volumes:\n";
-			yml_base += "            - \"" + pwdStr + "/results/" + this->workflow->getWorkdir() + ":" + pwdStr + "/results/" + this->workflow->getWorkdir() + "\"\n";
+        // Mount stage dirs + any stage sources (as you already did)
+        for (auto &stgkv : this->stages)
+        {
+            auto *stg = stgkv.second;
+            bb = stg->getBB(pat->getName());
+            if (bb != NULL)
+            {
+                auxPath = pwdStr + "/results/" + this->workflow->getWorkdir() + "/" + stg->getWorkdir();
+                yml_base += "      - \"" + auxPath + ":" + auxPath + "\"\n";
+                for (auto &s : stg->getSourceStr())
+                    if (dirExists(s.c_str()) == 1)
+                        yml_base += "      - \"" + s + ":" + s + "\"\n";
+            }
+        }
 
-			for (auto y : this->stages)
-			{
-				bb = y.second->getBB(x.second->getName());
-				if (bb != NULL)
-				{
-					auxPath = pwdStr + "/results/" + this->workflow->getWorkdir() + "/" + y.second->getWorkdir();
-					yml_base += "            - \"" + auxPath + ":" + auxPath + "\"\n";
+        // Networks: front + worker's backend net
+        const string worker = pat->getWorker()->getName();
+        const string net_worker = "net_" + worker;
+        backend_nets.insert(net_worker);
+        yml_base += "    networks:\n";
+        yml_base += "      front:\n";
+        yml_base += "        aliases:\n";
+        yml_base += "          - " + boost::algorithm::to_lower_copy(worker) + "-lb\n";
+        yml_base += "      " + net_worker + ":\n";
+    }
 
-					for (auto s : y.second->getSourceStr())
-					{
-						if (dirExists(s.c_str()) == 1)
-						{
-							yml_base += "            - \"" + s + ":" + s + "\"\n";
-						}
-					}
-				}
-			}
+    // -------- PROXY --------
+    yml_base += "  proxy:\n";
+    if (boost::iequals(mode, "swarm"))
+        yml_base += "    image: 127.0.0.1:5000/microservice:base\n";
+    else
+        yml_base += "    image: microservice:base\n";
 
-			// yml_base += "            - \""+x.second->getSource()+":"+x.second->getSource()+"\"\n";
-			// yml_base += "            - \""+x.second->getSink()+":"+x.second->getSink()+"\"\n";
-			yml_base += "        links:\n";
-			yml_base += "            - " + x.second->getWorker()->getName() + "\n";
-			links += "             - lb" + x.second->getName() + "\n";
-		}
-	}
+    if (!lb_names.empty())
+    {
+        yml_base += "    depends_on:\n";
+        for (auto &lb : lb_names)
+            yml_base += "      - " + lb + "\n";
+    }
+    yml_base += "    networks:\n";
+    yml_base += "      - front\n";
 
-	if (boost::iequals(mode, "swarm"))
-	{
-		yml_base += "    proxy:\n        image: 127.0.0.1:5000/microservice:base\n        links:\n" + links;
-	}
-	else
-	{
-		yml_base += "    proxy:\n        image: microservice:base\n        links:\n" + links;
-	}
-	
-	yml << yml_base << endl;
-	yml.close();
+    // -------- NETWORKS (front + one per worker) --------
+    yml_base += "\nnetworks:\n";
+    yml_base += "  front:\n";
+    yml_base += "    driver: bridge\n";
+    for (auto &net : backend_nets)
+    {
+        yml_base += "  " + net + ":\n";
+        yml_base += "    driver: bridge\n";
+    }
+
+    yml << yml_base << std::endl;
+    yml.close();
 }
+
 
 bool Launcher::downloadData(string apikey, string token, string access)
 {
