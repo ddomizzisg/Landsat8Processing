@@ -82,7 +82,7 @@ void Launcher::start(string mode)
 	}
 
 	Logger("LAUCHER: to shutdown the containers execute  \n\n" + down_command + "\n\n", true);
-	printJSON(compose_command);
+	//printJSON(compose_command);
 }
 
 void Launcher::printMonitoringFile(vector<string> containers)
@@ -222,7 +222,7 @@ void Launcher::printJSON(string compose_cmd_base)
 	json_file << json << endl;
 	json_file.close();
 
-	generateNormas(pwdStr + "/results/" + this->workflow->getWorkdir() + "/stages.json");
+	//generateNormas(pwdStr + "/results/" + this->workflow->getWorkdir() + "/stages.json");
 	//printMonitoringFile(containers_names);
 }
 

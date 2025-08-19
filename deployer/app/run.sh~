@@ -1,0 +1,12 @@
+
+for i in 1; do
+    for j in {2..5}; do
+        cfg="/cfg-files/configuration_${i}w.cfg"
+	echo "Running with configuration_$i.cfg"
+    	./puzzlemesh/puzzlemesh -m compose -c $cfg 
+    	{ time ./puzzlemesh/puzzlemesh -m compose -c $cfg -exec True; } > run_${i}_${j}.txt 2>&1
+    	docker-compose --log-level ERROR -p /home/app/results/workflow1 -f /home/app/results/workflow1/docker-compose.yml  down
+    done
+done
+
+
