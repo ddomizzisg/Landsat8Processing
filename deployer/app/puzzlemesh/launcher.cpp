@@ -401,7 +401,7 @@ void Launcher::buildYML(string mode)
 		yml_base += "        driver: bridge\n";
 		yml_base += "        ipam:\n";
 		yml_base += "            config:\n";
-		yml_base += "                - subnet: 172." + ::to_string(i) + ".0.0/24\n";
+		yml_base += "                - subnet: 172." + ::to_string(i) + ".0.0/20\n";
 		i++;
 	}
 
