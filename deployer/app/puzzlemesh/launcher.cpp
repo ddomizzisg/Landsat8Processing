@@ -385,7 +385,7 @@ void Launcher::buildYML(string mode)
 	Single auxSingle;
 	Pattern auxPatt;
 	set<vector<string>> volumes;
-	int i = 19
+	int i = 19;
 
 	pwdStr = this->workpath;
 
