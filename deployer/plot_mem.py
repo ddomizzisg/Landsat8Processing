@@ -55,6 +55,10 @@ def main():
     df["mem_mb"] = pd.to_numeric(df["mem_mb"], errors="coerce")
     df = df.dropna(subset=["t_sec", "mem_mb"])
 
+    # Keep only first 800 seconds
+    df = df[df["t_sec"] <= 800]
+
+
     # Optional downsampling: bin by floor(t_sec / bin)*bin and average
     bin_w = max(args.downsample, 0.001)
     df["_bin"] = (df["t_sec"] // bin_w) * bin_w
@@ -71,7 +75,7 @@ def main():
         # Optional rolling smoothing
         if args.rolling > 1:
             agg["mem_mb"] = agg["mem_mb"].rolling(args.rolling, min_periods=1).mean()
-
+        
         ax.plot(agg["_bin"], agg["mem_mb"], label=name)
 
     ax.set_xlabel("Time (s)")

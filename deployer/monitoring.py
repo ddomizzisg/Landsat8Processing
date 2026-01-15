@@ -115,9 +115,9 @@ def main():
         w.writerow(header)
 
         while True:
-            now = time.time()
-            if now - t_start > args.duration:
-                break
+            #now = time.time()
+            #if now - t_start > args.duration:
+            #    break
 
             try:
                 text = fetch_text(args.endpoint)
