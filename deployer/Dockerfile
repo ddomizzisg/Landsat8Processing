@@ -1,109 +1,90 @@
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
-# ARG DEBIAN_FRONTEND=noninteractive
-# 
-# RUN apt-get remove docker docker-engine docker.io containerd runc
-# 
-# RUN apt-get update
-# 
-# RUN apt-get -y install \
-#     ca-certificates \
-#     curl \
-#     gnupg \
-#     lsb-release \
-#     git
-#     
-# RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-# 
-# RUN echo \
-#   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-#   $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-#   
-# RUN apt-get update
-# 
-# RUN apt-get install -y golang-github-docker-containerd-dev
-# RUN apt-get install -y docker-ce docker-ce-cli containerd.
+# Evitar prompts interactivos
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update
-RUN apt install -y software-properties-common
-RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test
-RUN apt install -y gcc-9 g++-9
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
-RUN update-alternatives --config gcc
-RUN apt-get install -y make
-RUN apt-get install -y libcurl4-openssl-dev
-RUN apt-get install -y nlohmann-json-dev
-RUN apt-get install -y wget curl
-RUN apt-get install -y default-jdk
-RUN apt-get install -y libssl-dev
-RUN apt-get install -y python3 python3-pip
-
-
-RUN apt-get install -y \
+# Capa 1: Actualización base y utilidades esenciales de red/sistema
+RUN apt-get update && apt-get install -y \
     ca-certificates \
     curl \
     gnupg \
-    lsb-release
+    lsb-release \
+    software-properties-common \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+# Capa 2: Herramientas de compilación y control de versiones
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    make \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Capa 3: Compiladores específicos (GCC 9) y configuración
+# Útil si tu código requiere una versión de compilador antigua
+RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+    apt-get update && apt-get install -y \
+    gcc-9 \
+    g++-9 \
+    && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 \
+    --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
+    --slave /usr/bin/gcov gcov /usr/bin/gcov-9 \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update
-RUN apt-get install -y docker-ce docker-ce-cli containerd.io
-  
-#RUN apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates
-#RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
-#RUN apt -y install nodejs
+# Capa 4: Dependencias de C++ y librerías de desarrollo
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    nlohmann-json3-dev \
+    libssl-dev \
+    libjsoncpp-dev \
+    libicu-dev \
+    libbz2-dev \
+    libboost-all-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-#RUN pip3 install mysql-connector-python
+# Capa 5: Entornos de ejecución (Python y Java)
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-dev \
+    default-jdk \
+    && rm -rf /var/lib/apt/lists/*
 
+# Capa 6: Instalación de Docker Engine (CLI y herramientas)
+RUN mkdir -p /usr/share/keyrings && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io && \
+    rm -rf /var/lib/apt/lists/*
 
-#RUN apt-get install -y python-pip
-#RUN pip install statistics
-RUN curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-RUN chmod +x /usr/local/bin/docker-compose
-RUN apt-get install  -y python3-pip
-RUN apt-get install -y python-dev autotools-dev libicu-dev libbz2-dev libboost-all-dev
+# Capa 7: Docker Compose binario
+RUN curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose
 
+# Capa 8: Compilación manual de CMake 3.21.2 (si la versión de apt no es suficiente)
 WORKDIR /installation
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2.tar.gz && \
+    tar -xzvf cmake-3.21.2.tar.gz && \
+    cd cmake-3.21.2 && \
+    ./configure && \
+    make -j$(nproc) && \
+    make install && \
+    cd .. && rm -rf cmake-3.21.2*
 
-RUN wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2.tar.gz
-RUN tar -xzvf cmake-3.21.2.tar.gz
-WORKDIR /installation/cmake-3.21.2
-RUN ./configure
-RUN make
-RUN make install
+# Capa 9: Compilación manual de Boost 1.77.0
+RUN wget -O boost_1_77_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.77.0/boost_1_77_0.tar.gz/download && \
+    tar -xzvf boost_1_77_0.tar.gz && \
+    cd boost_1_77_0 && \
+    ./bootstrap.sh --prefix=/usr/ && \
+    ./b2 -j$(nproc) install && \
+    cd .. && rm -rf boost_1_77_0*
 
-WORKDIR /installation
+# Capa 10: Código de la aplicación
+COPY ./app /home/app
+WORKDIR /home/app/puzzlemesh
 
-RUN wget -O boost_1_77_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.77.0/boost_1_77_0.tar.gz/download
-RUN tar -xzvf boost_1_77_0.tar.gz
-
-WORKDIR /installation/boost_1_77_0
-
-
-RUN ./bootstrap.sh --prefix=/usr/
-RUN ./b2
-RUN ./b2 install
-
-# WORKDIR /home/app/deployer
-# RUN make clean
-# RUN make
-# ommited since there is no source code to compile
-# RUN make clean
-# RUN make
-
-COPY ./source /home/app
-
-RUN apt-get install -y libjsoncpp-dev
-WORKDIR /home/app
-RUN make
-
+# Capa 11: Build final
+RUN cmake . && make 
 
 WORKDIR /home/app
-#RUN pip3 install --no-cache-dir -r requirements.txt
-
-

@@ -1,18 +1,18 @@
 #version: '3'
 services:
   deployer:
-    image: ddomizzi/deployernez:v1
+    image: nez:v1
     tty: true
     restart: unless-stopped
     #working_dir: /home/domizzi/Documents/geoprocindexing/deployer/
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock' #Docker deamon
       - './results:/home/app/results' #Deployer
-      - '/home/domizzi/Downloads/landsat/huelva/:/home/domizzi/Downloads/landsat/huelva/' #Data source
+      #- '/home/domizzi/Downloads/landsat/huelva/:/home/domizzi/Downloads/landsat/huelva/' #Data source
       - './cfg-files:/cfg-files' #Configuration files
       - './app/:/home/app'
     environment:
-      HOST_PATH: /home/domizzi/Documents/GitHub/Landsat8Processing/deployer
+      HOST_PATH: /home/domizzi/Documents/Landsat8Processing/deployer
   # endpoint1:
   #   build: cliente
   #   image: ddomizzi/endpointnez:v1
