@@ -7,7 +7,7 @@ void Launcher::execute(string mode)
 	this->coupling();
 	this->buildYML(mode);
 
-	compose_command = "docker-compose --log-level ERROR -p " + this->workpath_container + "/results/" + this->workflow->getWorkdir() +
+	compose_command = "docker-compose --log-level ERROR -p " + this->workflow->getName() +
 					  " -f " + this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml ";
 
 	//Deploy YML
@@ -30,7 +30,7 @@ void Launcher::stop(string mode)
 	this->coupling();
 	this->buildYML(mode);
 
-	compose_command = "docker-compose --log-level ERROR -p " + pwdStr + "/results/" + this->workflow->getWorkdir() +
+	compose_command = "docker-compose --log-level ERROR -p " + this->workflow->getName() +
 					  " -f " + pwdStr + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml down";
 
 	system(compose_command.c_str());
@@ -54,7 +54,7 @@ void Launcher::start(string mode)
 	}
 	else
 	{
-		compose_command = "docker-compose --log-level ERROR -p " + this->workpath_container + "/results/" + this->workflow->getWorkdir() +
+		compose_command = "docker-compose --log-level ERROR -p " + this->workflow->getName() +
 						  " -f " + this->workpath_container + "/results/" + this->workflow->getWorkdir() + "/docker-compose.yml ";
 		up_command = compose_command + " up -d --build";
 		// //search fo replicas
@@ -399,9 +399,9 @@ void Launcher::buildYML(string mode)
 	{
 		yml_base += "    net_" + x.second->getName() + ": \n";
 		yml_base += "        driver: bridge\n";
-		yml_base += "        ipam:\n";
-		yml_base += "            config:\n";
-		yml_base += "                - subnet: 172." + ::to_string(i) + ".0.0/20\n";
+		//yml_base += "        ipam:\n";
+		//yml_base += "            config:\n";
+		//yml_base += "                - subnet: 172." + ::to_string(i) + ".0.0/24\n";
 		i++;
 	}
 
